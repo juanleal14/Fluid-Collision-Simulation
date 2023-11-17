@@ -1,6 +1,8 @@
 #include "particles.hpp"
 
-class Vect3 {
+ template <typename T>
+ class Vect3
+ {
 public:
     // Constructor to initialize constant features
     Vect3(double xset, double yset, double zset) : xcoord(xset), zcoord(zset), ycoord(yset) {}
@@ -47,11 +49,11 @@ private:
 class Particle{
 public:
     int id;
-    Vect3 pos;
-    Vect3 hv;
-    Vect3 v;
+    Vect3<double> pos;
+    Vect3<double> hv;
+    Vect3<double> v;
     double density;
-    Vect3 acceleration;
+    Vect3<double> acceleration;
 
 public:
     Particle(int id_val, Vect3 pos, Vect3 hvs, Vect3 vel, double d, Vect3 a): id(id_val), pos(pos), hv(hvs), v(vel), density(d), acceleration(a){}
