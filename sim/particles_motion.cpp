@@ -29,9 +29,9 @@ void load_trace(std::string trz, Grid &grid, std::vector<Particle> &particles, s
             file.read(reinterpret_cast<char*>(&particles[part_id].hv().x()), sizeof(double));//NOLINT
             file.read(reinterpret_cast<char*>(&particles[part_id].hv().y()), sizeof(double));//NOLINT
             file.read(reinterpret_cast<char*>(&particles[part_id].hv().z()), sizeof(double));//NOLINT
-            file.read(reinterpret_cast<char*>(&particles[part_id].vel().x()), sizeof(double));//NOLINT
-            file.read(reinterpret_cast<char*>(&particles[part_id].vel().y()), sizeof(double));//NOLINT
-            file.read(reinterpret_cast<char*>(&particles[part_id].vel().z()), sizeof(double));//NOLINT
+            file.read(reinterpret_cast<char*>(&particles[part_id].v.x()), sizeof(double));//NOLINT
+            file.read(reinterpret_cast<char*>(&particles[part_id].v.y()), sizeof(double));//NOLINT
+            file.read(reinterpret_cast<char*>(&particles[part_id].v.z()), sizeof(double));//NOLINT
             file.read(reinterpret_cast<char*>(&densities[part_id]), sizeof(double));//NOLINT
             file.read(reinterpret_cast<char*>(&read_value), sizeof(double));//NOLINT
             accelerations[part_id].set_acc_x(read_value);
@@ -50,8 +50,8 @@ void compare_accelerations(Acceleration &a1, Acceleration &a2, long id){
         std::cout<<"id = "<<id<<" "<<"Accelerations x() differ, a1.x() = "<<a1.x()<<" a2.x() = "<<a2.x()<<'\n';
         //exit(-1);
     }
-    if (a1.ay!=a2.ay){
-        std::cout<<"id = "<<id<<" "<<"Accelerations ay differ, a1.ay = "<<a1.ay<<" a2.ay = "<<a2.ay<<'\n';
+    if (a1.acceleration.y()!=a2.acceleration.y()){
+        std::cout<<"id = "<<id<<" "<<"Accelerations ay differ, a1.acceleration.y() = "<<a1.acceleration.y()<<" a2.acceleration.y() = "<<a2.acceleration.y()<<'\n';
         //exit(-1);
     }
     if (a1.az!=a2.az){
@@ -85,16 +85,16 @@ void compare_particle(Particle &p1, Particle &p2,long id){
         std::cout<<"id = "<<id<<" "<<"Particles hvz pos differ, p1.hv().z() = "<<p1.hv().z()<<" p2.hv().z() = "<<p2.hv().z()<<'\n';
         //exit(-1);
     }
-    if (p1.vel().x() != p2.vel().x()){
-        std::cout<<"id = "<<id<<" "<<"Particles vx pos differ, p1.vel().x() = "<<p1.vel().x()<<" p2.vel().x() = "<<p2.vel().x()<<'\n';
+    if (p1.v.x() != p2.v.x()){
+        std::cout<<"id = "<<id<<" "<<"Particles vx pos differ, p1.v.x() = "<<p1.v.x()<<" p2.v.x() = "<<p2.v.x()<<'\n';
         //exit(-1);
     }
-    if (p1.vel().y() != p2.vel().y()){
-        std::cout<<"id = "<<id<<" "<<"Particles vy pos differ, p1.vel().y() = "<<p1.vel().y()<<" p2.vel().y() = "<<p2.vel().y()<<'\n';
+    if (p1.v.y() != p2.v.y()){
+        std::cout<<"id = "<<id<<" "<<"Particles vy pos differ, p1.v.y() = "<<p1.v.y()<<" p2.v.y() = "<<p2.v.y()<<'\n';
         //exit(-1);
     }
-    if (p1.vel().z() != p2.vel().z()){
-        std::cout<<"id = "<<id<<" "<<"Particles vz pos differ, p1.vel().z() = "<<p1.vel().z()<<" p2.vel().z() = "<<p2.vel().z()<<'\n';
+    if (p1.v.z() != p2.v.z()){
+        std::cout<<"id = "<<id<<" "<<"Particles vz pos differ, p1.v.z() = "<<p1.v.z()<<" p2.v.z() = "<<p2.v.z()<<'\n';
         //exit(-1);
     }
 
@@ -155,12 +155,12 @@ void check_trace(std::string trz, Grid &grid, std::vector<Particle> &particles, 
             file.read(reinterpret_cast<char*>(&part.hv().x()), sizeof(double));//NOLINT
             file.read(reinterpret_cast<char*>(&part.hv().y()), sizeof(double));//NOLINT
             file.read(reinterpret_cast<char*>(&part.hv().z()), sizeof(double));//NOLINT
-            file.read(reinterpret_cast<char*>(&part.vel().x()), sizeof(double));//NOLINT
-            file.read(reinterpret_cast<char*>(&part.vel().y()), sizeof(double));//NOLINT
-            file.read(reinterpret_cast<char*>(&part.vel().z()), sizeof(double));//NOLINT
+            file.read(reinterpret_cast<char*>(&part.v.x()), sizeof(double));//NOLINT
+            file.read(reinterpret_cast<char*>(&part.v.y()), sizeof(double));//NOLINT
+            file.read(reinterpret_cast<char*>(&part.v.z()), sizeof(double));//NOLINT
             file.read(reinterpret_cast<char*>(&d), sizeof(double));//NOLINT
             file.read(reinterpret_cast<char*>(&a.x()), sizeof(double));//NOLINT
-            file.read(reinterpret_cast<char*>(&a.ay), sizeof(double));//NOLINT
+            file.read(reinterpret_cast<char*>(&a.acceleration.y()), sizeof(double));//NOLINT
             file.read(reinterpret_cast<char*>(&a.az), sizeof(double));//NOLINT
 
 
@@ -211,12 +211,12 @@ std::vector <Particle> receive_trace(std::string trz, std::vector<double> &densi
             file.read(reinterpret_cast<char *>(&part.hv().x()), sizeof(double));//NOLINT
             file.read(reinterpret_cast<char *>(&part.hv().y()), sizeof(double));//NOLINT
             file.read(reinterpret_cast<char *>(&part.hv().z()), sizeof(double));//NOLINT
-            file.read(reinterpret_cast<char *>(&part.vel().x()), sizeof(double));//NOLINT
-            file.read(reinterpret_cast<char *>(&part.vel().y()), sizeof(double));//NOLINT
-            file.read(reinterpret_cast<char *>(&part.vel().z()), sizeof(double));//NOLINT
+            file.read(reinterpret_cast<char *>(&part.v.x()), sizeof(double));//NOLINT
+            file.read(reinterpret_cast<char *>(&part.v.y()), sizeof(double));//NOLINT
+            file.read(reinterpret_cast<char *>(&part.v.z()), sizeof(double));//NOLINT
             file.read(reinterpret_cast<char *>(&d), sizeof(double));//NOLINT
             file.read(reinterpret_cast<char *>(&a.x()), sizeof(double));//NOLINT
-            file.read(reinterpret_cast<char *>(&a.ay), sizeof(double));//NOLINT
+            file.read(reinterpret_cast<char *>(&a.acceleration.y()), sizeof(double));//NOLINT
             file.read(reinterpret_cast<char *>(&a.az), sizeof(double));//NOLINT
             accelerations.push_back(a);
             densities.push_back(d);
@@ -254,9 +254,9 @@ void write_to_file(const std::string& output_file_address,std::vector<Particle> 
         hvx = static_cast<float>(particles[loop_i].hv().x());
         hvy = static_cast<float>(particles[loop_i].hv().y());
         hvz = static_cast<float>(particles[loop_i].hv().z());
-        part_vel_x = static_cast<float>(particles[loop_i].vel().x());
-        part_vel_y = static_cast<float>(particles[loop_i].vel().y());
-        part_vel_z = static_cast<float>(particles[loop_i].vel().z());
+        part_vel_x = static_cast<float>(particles[loop_i].v.x());
+        part_vel_y = static_cast<float>(particles[loop_i].v.y());
+        part_vel_z = static_cast<float>(particles[loop_i].v.z());
         output_file.write(reinterpret_cast<const char*>(&part_coord_x), sizeof(float));//NOLINT
         output_file.write(reinterpret_cast<const char*>(&part_coord_y), sizeof(float));//NOLINT
         output_file.write(reinterpret_cast<const char*>(&part_coord_z), sizeof(float));//NOLINT
@@ -275,7 +275,7 @@ void particles_motion(std::vector<Particle> &particles, Grid &grid, std::vector 
     for (int loop_i = 0; loop_i < particles.size(); loop_i++){
 
         double move_x = particles[loop_i].hv().x()*time_step + accelerations[loop_i].x()*pow(time_step,2);
-        double move_y = particles[loop_i].hv().y()*time_step + accelerations[loop_i].ay*pow(time_step,2);
+        double move_y = particles[loop_i].hv().y()*time_step + accelerations[loop_i].acceleration.y()*pow(time_step,2);
         double move_z = particles[loop_i].hv().z()*time_step + accelerations[loop_i].az*pow(time_step,2);
 
         int old_block = find_block(particles[loop_i],grid.size);
@@ -283,11 +283,11 @@ void particles_motion(std::vector<Particle> &particles, Grid &grid, std::vector 
         particles[loop_i].pos().x() += move_x;
         particles[loop_i].pos().y() += move_y;
         particles[loop_i].pos().z() += move_z;
-        particles[loop_i].vel().x() = particles[loop_i].hv().x() + (accelerations[loop_i].x()*time_step)/2;
-        particles[loop_i].vel().y() = particles[loop_i].hv().y() + (accelerations[loop_i].ay*time_step)/2;
-        particles[loop_i].vel().z() = particles[loop_i].hv().z() + (accelerations[loop_i].az*time_step)/2;
+        particles[loop_i].v.x() = particles[loop_i].hv().x() + (accelerations[loop_i].x()*time_step)/2;
+        particles[loop_i].v.y() = particles[loop_i].hv().y() + (accelerations[loop_i].acceleration.y()*time_step)/2;
+        particles[loop_i].v.z() = particles[loop_i].hv().z() + (accelerations[loop_i].az*time_step)/2;
         particles[loop_i].hv().x() = particles[loop_i].hv().x() + accelerations[loop_i].x()*time_step;
-        particles[loop_i].hv().y() = particles[loop_i].hv().y() + accelerations[loop_i].ay*time_step;
+        particles[loop_i].hv().y() = particles[loop_i].hv().y() + accelerations[loop_i].acceleration.y()*time_step;
         particles[loop_i].hv().z() = particles[loop_i].hv().z() + accelerations[loop_i].az*time_step;
 
         int new_block = find_block(particles[loop_i],grid.size);
@@ -351,9 +351,9 @@ void acceleration_transfer(std::vector<Particle> &particles, Grid &grid, std::ve
                         double dist_squared = distance_squared(pi, pj);
                         if (dist_squared < (pow(h, 2))) {
                             double distij = sqrt(std::max(dist_squared, pow(10,-12))); /// In these 4 lines calculate distij as stated in project and update accelerations
-                            accelerations[particle_i_index].x() += ((pi.pos().x() - pj.pos().x()) * (15 / (std::numbers::pi*pow(h,6))) * (3 * m * stiff_pressure/2) * pow(h-distij,2)/distij * (densities[particle_i_index] + densities[particle_j_index] - 2*global_density) + (pj.vel().x() - pi.vel().x()) * (45/(std::numbers::pi*pow(h,6)) ) * viscosity * m) / (densities[particle_i_index] * densities[particle_j_index]);
-                            accelerations[particle_i_index].ay += ((pi.pos().y() - pj.pos().y()) * (15 / (std::numbers::pi*pow(h,6))) * (3 * m * stiff_pressure/2) * pow(h-distij,2)/distij * (densities[particle_i_index] + densities[particle_j_index] - 2*global_density) + (pj.vel().y() - pi.vel().y()) * (45/(std::numbers::pi*pow(h,6)) ) * viscosity * m) / (densities[particle_i_index] * densities[particle_j_index]);
-                            accelerations[particle_i_index].az += ((pi.pos().z() - pj.pos().z()) * (15 / (std::numbers::pi*pow(h,6))) * (3 * m * stiff_pressure/2) * pow(h-distij,2)/distij * (densities[particle_i_index] + densities[particle_j_index] - 2*global_density) + (pj.vel().z() - pi.vel().z()) * (45/(std::numbers::pi*pow(h,6)) ) * viscosity * m) / (densities[particle_i_index] * densities[particle_j_index]);
+                            accelerations[particle_i_index].x() += ((pi.pos().x() - pj.pos().x()) * (15 / (std::numbers::pi*pow(h,6))) * (3 * m * stiff_pressure/2) * pow(h-distij,2)/distij * (densities[particle_i_index] + densities[particle_j_index] - 2*global_density) + (pj.v.x() - pi.v.x()) * (45/(std::numbers::pi*pow(h,6)) ) * viscosity * m) / (densities[particle_i_index] * densities[particle_j_index]);
+                            accelerations[particle_i_index].acceleration.y() += ((pi.pos().y() - pj.pos().y()) * (15 / (std::numbers::pi*pow(h,6))) * (3 * m * stiff_pressure/2) * pow(h-distij,2)/distij * (densities[particle_i_index] + densities[particle_j_index] - 2*global_density) + (pj.v.y() - pi.v.y()) * (45/(std::numbers::pi*pow(h,6)) ) * viscosity * m) / (densities[particle_i_index] * densities[particle_j_index]);
+                            accelerations[particle_i_index].az += ((pi.pos().z() - pj.pos().z()) * (15 / (std::numbers::pi*pow(h,6))) * (3 * m * stiff_pressure/2) * pow(h-distij,2)/distij * (densities[particle_i_index] + densities[particle_j_index] - 2*global_density) + (pj.v.z() - pi.v.z()) * (45/(std::numbers::pi*pow(h,6)) ) * viscosity * m) / (densities[particle_i_index] * densities[particle_j_index]);
                         }
                     }
                 }
@@ -362,15 +362,14 @@ void acceleration_transfer(std::vector<Particle> &particles, Grid &grid, std::ve
     }
 }
 
-void accelerations_computation(std::vector<Particle> &particles, Grid &grid,std::vector <double> &densities, std::vector <Acceleration> &accelerations){
+void accelerations_computation(std::vector<Particle> &particles, Grid &grid){
     //initialization of densities and accelerations
-    densities.clear();
-    accelerations.clear();
-    struct Acceleration a;
+
+
     for (int i = 0; i < particles.size(); i++){
         densities.push_back(0);
         a.ax = 0;
-        a.ay = -gravity;
+        a.acceleration.y() = -gravity;
         a.az = 0;
         accelerations.push_back(a);
     }

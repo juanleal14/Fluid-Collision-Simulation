@@ -5,6 +5,9 @@
 
 #include "libraries.h"
 #include "progargs.cpp"
+typedef std::vector<Particle> Block;
+
+
 
 //class Block; //Can it be declared constant?
 

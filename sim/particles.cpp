@@ -5,7 +5,7 @@
  {
 public:
     // Constructor to initialize constant features
-    Vect3(double xset, double yset, double zset) : xcoord(xset), zcoord(zset), ycoord(yset) {}
+    Vect3(T xset, T yset, T zset) : xcoord(xset),ycoord(yset), zcoord(zset)  {}
     // Getter methods to access individual features
     [[nodiscard]] T x() const { return xcoord; }
     [[nodiscard]] T y() const { return ycoord; }
@@ -62,7 +62,8 @@ public:
     Vect3 hv(){return hv_values;}
     Vect3 vel(){return v_values;}
     int id(){return id_number;}
-    Vect3 acc(){return acceleration;}
+    Vect3 acc()
+     {return acceleration;}
      */
 };
 

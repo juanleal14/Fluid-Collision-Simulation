@@ -78,7 +78,7 @@ int read_particle_info(std::ifstream &file,std::vector<Particle> &particles){
     float hvz = 0;
     while(file.peek()!=EOF){
         counter ++;
-        Particle particle{};
+        Particle particle;
         file.read(reinterpret_cast<char*>(&part_coord_x), sizeof(float));//NOLINT
         file.read(reinterpret_cast<char*>(&part_coord_y), sizeof(float));//NOLINT
         file.read(reinterpret_cast<char*>(&part_coord_z), sizeof(float));//NOLINT
@@ -88,15 +88,15 @@ int read_particle_info(std::ifstream &file,std::vector<Particle> &particles){
         file.read(reinterpret_cast<char*>(&part_vel_x), sizeof(float));//NOLINT
         file.read(reinterpret_cast<char*>(&part_vel_y), sizeof(float));//NOLINT
         file.read(reinterpret_cast<char*>(&part_vel_z), sizeof(float));//NOLINT
-        particle.px = static_cast<double>(part_coord_x);
-        particle.py = static_cast<double>(part_coord_y);
-        particle.pz = static_cast<double>(part_coord_z);
-        particle.hvx = static_cast<double>(hvx);
-        particle.hvy = static_cast<double>(hvy);
-        particle.hvz = static_cast<double>(hvz);
-        particle.vx = static_cast<double>(part_vel_x);
-        particle.vy = static_cast<double>(part_vel_y);
-        particle.vz = static_cast<double>(part_vel_z);
+        particle.pos.set_x(static_cast<double>(part_coord_x));
+        particle.pos.set_y(static_cast<double>(part_coord_y));
+        particle.pos.set_z(static_cast<double>(part_coord_z));
+        particle.hv.set_x(static_cast<double>(hvx));
+        particle.hv.set_y(static_cast<double>(hvy));
+        particle.hv.set_z(static_cast<double>(hvz));
+        particle.v.set_x(static_cast<double>(part_vel_x));
+        particle.v.set_y(static_cast<double>(part_vel_y));
+        particle.v.set_z(static_cast<double>(part_vel_z));
         particles.push_back(particle);
     }
     return counter;}

@@ -27,11 +27,10 @@ private:
     Vect3 sizes;
 };
 
-
-    class Grid {
+class Grid {
     public:
         // Use member initializer list for member variable initialization
-        Grid() : size(), blocks(size.getNumX(), std::vector<int>(size.getNumY(), 0)) {}
+        Grid() : size(), block(size.getNumX(), std::vector<int>(size.getNumY(), 0)) {}
 
         // Public members for direct access
         GridSize size;
@@ -133,7 +132,7 @@ Grid grid_initialization(Initial_Values &initialValues,Block &particles){
     const std::vector<std::vector <int>> blocks = gridCreation(gridSize);
     Grid grid;
     grid.size = gridSize;
-    grid.blocks = blocks;
+    grid.blocks = blocks(grid.size.getNumX(), std::vector<int>(grid.size.getNumY(), 0);
     std::cout<<"After : "<<grid.blocks.size()<<'\n';
     for (int i = 0; i < particles.size(); i++){
         const int index = find_block(particles[i],grid.size);
@@ -143,48 +142,48 @@ Grid grid_initialization(Initial_Values &initialValues,Block &particles){
     return grid;
 }
 
-void particle_collision_with_Z_axis( Grid &grid) {
+void particle_collision_with_Z_axis(Grid &grid) {
 
     double z_param = 0;
     double increment = 0;
     for (int loop_i = 0; loop_i < grid.size.getNumX()*grid.size.getNumY(); loop_i++) {   //pared Z_0 //the number of particles in the x axis is num_y * num_x twice x min and xmax
-        for (const int loop_j: grid.blocks[loop_i]) {
-            z_param = particles[loop_j].pos().z() + particles[loop_j].hv().z() * time_step;        //  z = pz + hvz · ∆t
+        for (auto loop_j: grid.blocks[loop_i]) {
+            z_param = loop_j.pos.z() + loop_j.hv.z() * time_step;        //  z = pz + hvz · ∆t
             increment = part_size - (z_param - bmin.z());                                //  part_size − (z − zmin)
             if (increment > distance_minimum) {                            //  az + (cs · ∆z − damping · vz)
-            particles[loop_j].acc().z() = particles[loop_j].acc().z() + (stiff_collision * increment - damping * particles[loop_j].vel().z());
+            loop_j.acceleration.set_z(loop_j.acceleration.z() + (stiff_collision * increment - damping * loop_j.v.z()));
             }
         }
     }
     for (int loop_i = (grid.size.getNumZ()*grid.size.getNumY()*grid.size.getNumX() - grid.size.getNumX()*grid.size.getNumY())-1; loop_i < grid.size.getNumZ()*grid.size.getNumY()*grid.size.getNumX(); loop_i++){
-        for (const int loop_j : grid.blocks[loop_i]) {                                       //pared Z_max
-            z_param = particles[loop_j].pos().z() + particles[loop_j].hv().z() * time_step;        //  z = pz + hvz · ∆t
+        for (auto loop_j : grid.blocks[loop_i]) {                                       //pared Z_max
+            z_param = loop_j.pos.z() + loop_j.hv.z() * time_step;        //  z = pz + hvz · ∆t
             increment = part_size - (bmax.z() - z_param);                                //  part_size − (zmax − x)
             if (increment > distance_minimum) {                             //  az − (cs · ∆z + damping · vz)
-                particles[loop_j].acc().z() = particles[loop_j].acc().z() - (stiff_collision * increment + damping * particles[loop_j].vel().z());
+                loop_j.acceleration.set_z(loop_j.acceleration.z() - (stiff_collision * increment + damping * loop_j.v.z()));
             }
         }
     }
 }
 
-void particle_collision_with_Y_axis(std::vector<Particle> &particles , Grid &grid, std::vector <Acceleration> &particles) {
+void particle_collision_with_Y_axis(Grid &grid) {
 
     double y_param = 0;
     double increment = 0;
     for (int loop_i = 0; loop_i < grid.size.getNumZ(); loop_i++){     //the number of particles in the y axis is num_x * num_z, twice y min and xmax
-        for (long loop_j = 0, loop_k=grid.size.getNumX()*(grid.size.getNumY()-1); loop_j < grid.size.getNumX(); loop_j++,loop_k++) {//pared Y_0
-            for (int loop_l : grid.blocks[ loop_j + loop_i * grid.size.getNumX() * grid.size.getNumY()]) {//  block_index = j + i * grid.size.num_x * grid.size.num_y;
-                y_param = particles[loop_l].pos().y()  + particles[loop_l].hv().y() * time_step;   //  y = py + hvy · ∆t
+        for (int loop_j = 0, loop_k=grid.size.getNumX()*(grid.size.getNumY()-1); loop_j < grid.size.getNumX(); loop_j++,loop_k++) {//pared Y_0
+            for (auto loop_l : grid.blocks[ loop_j + loop_i * grid.size.getNumX() * grid.size.getNumY()]) {//  block_index = j + i * grid.size.num_x * grid.size.num_y;
+                y_param = loop_l.pos.y()  + loop_l.hv.y() * time_step;   //  y = py + hvy · ∆t
                 increment = part_size - (y_param - bmin.y());                        //  part_size − (y − ymin)grid.blocks[block_index]
                 if (increment > distance_minimum) {                         //  ay + (stiff_collision · ∆y − damping · vy)
-                    particles[loop_l].acc().y() = particles[loop_l].acc().y() + (stiff_collision * increment - damping * particles[loop_l].vel().y());
+                    loop_l.acceleration.set_y(loop_l.acceleration.y() + (stiff_collision * increment - damping * loop_l.v.y()));
                 }
             }                                                                //  pared Y_max
-            for (int loop_l : grid.blocks[loop_k + loop_i * grid.size.getNumX() * grid.size.getNumY()]) { //  block_index = k + i * grid.size.num_x * grid.size.num_y;
-                y_param = particles[loop_l].pos().y() + particles[loop_l].hv().y() * time_step;    //  y = py + hvy · ∆t
+            for (auto loop_l : grid.blocks[loop_k + loop_i * grid.size.getNumX() * grid.size.getNumY()]) { //  block_index = k + i * grid.size.num_x * grid.size.num_y;
+                y_param = loop_l.pos.y() + loop_l.hv.y() * time_step;    //  y = py + hvy · ∆t
                 increment = part_size - (bmax.y() - y_param);                        //  part_size − (ymay − y) i
                 if (increment > distance_minimum) {                       //  ay − (stiff_collision · ∆y + damping · vy)
-                    particles[loop_l].acc().y() = particles[loop_l].acc().y() - (stiff_collision * increment + damping * particles[loop_l].vel().y());
+                    loop_l.acceleration.set_y(loop_l.acceleration.y() - (stiff_collision * increment + damping * loop_l.v.y()));
                 }
             }
         }
@@ -196,18 +195,18 @@ void particle_collision_with_X_axis(std::vector<Particle> &particles, Grid &grid
     double x_param = 0 ;
     double increment = 0;
     for (int loop_i = 0,loop_j =grid.size.getNumX()-1; loop_i < grid.size.getNumZ()*grid.size.getNumY()*grid.size.getNumX(); loop_i+=grid.size.getNumX(), loop_j+=grid.size.getNumX()){
-        for (const int loop_l : grid.blocks[loop_i]) {                                       //pared X_0
-            x_param = particles[loop_l].pos().x() + particles[loop_l].hv().x() * time_step;        //  x = px + hvx · ∆t
+        for (auto loop_l : grid.blocks[loop_i]) {                                       //pared X_0
+            x_param = loop_l.pos.x() + loop_l.hv.x() * time_step;        //  x = px + hvx · ∆t
             increment = part_size - (x_param - bmin.x());                             //  part_size − (x − xmin)
             if (increment > distance_minimum) {                              //ax + (stiff_collision · ∆x − damping · vx)
-                particles[loop_l].acc().x() = particles[loop_l].acc().x() + (stiff_collision * increment - damping * particles[loop_l].vel().x());
+                loop_l.acceleration.set_x(loop_l.acceleration.x() + (stiff_collision * increment - damping * loop_l.v.x()));
             }
         }
-        for (const int loop_l : grid.blocks[loop_j]) {                                       //pared X_max
-            x_param = particles[loop_l].pos().x() + particles[loop_l].hv().x() * time_step;        //x = px + hvx · ∆t
+        for (auto loop_l : grid.blocks[loop_j]) {                                       //pared X_max
+            x_param = loop_l.pos.x() + loop_l.hv.x() * time_step;        //x = px + hvx · ∆t
             increment = part_size - (bmax.x()- x_param);                             //part_size − (xmax− x)
             if (increment > distance_minimum) {                             //ax − (stiff_collision · ∆x + damping · vz)
-                particles[loop_l].acc().x() = particles[loop_l].acc().x() - (stiff_collision * increment + damping * particles[loop_l].vel().x());
+                loop_l.acceleration.set_x(loop_l.acceleration.x() - (stiff_collision * increment + damping * loop_l.v.x()));
             }
         }
     }
@@ -218,22 +217,22 @@ void Z_boundary_interaction(std::vector<Particle> &particles, Grid &grid) {
 
     double distance_z = 0;
     for (int loop_i = 0; loop_i < grid.size.getNumX()*grid.size.getNumY(); loop_i++) {   //pared x_0 //the number of particles in the x axis is num_y * num_z twice x min and xmax
-        for (int loop_j: grid.blocks[loop_i]) {
-            distance_z = particles[loop_j].pos().z() - bmin.z();
+        for (auto loop_j: grid.blocks[loop_i]) {
+            distance_z = loop_j.pos.z() - bmin.z();
             if (distance_z < 0) {
-                particles[loop_j].pos().y() = bmin.z() - distance_z;
-                particles[loop_j].vel().z() = -particles[loop_j].vel().z();
-                particles[loop_j].hv().z() = -particles[loop_j].hv().z();
+                loop_j.pos.set_y(bmin.z() - distance_z);
+                loop_j.v.set_z(-loop_j.v.z());
+                loop_j.hv.set_z(-loop_j.hv.z());
             }
         }
     }
     for (int loop_i = (grid.size.getNumZ()*grid.size.getNumY()*grid.size.getNumX() - grid.size.getNumX()*grid.size.getNumY())-1; loop_i < grid.size.getNumZ()*grid.size.getNumY()*grid.size.getNumX(); loop_i++){    //pared x_max
-        for (int loop_j : grid.blocks[loop_i]) {
-            distance_z = bmax.z() - particles[loop_j].pos().z();
+        for (auto loop_j : grid.blocks[loop_i]) {
+            distance_z = bmax.z() - loop_j.pos.z();
             if (distance_z < 0) {
-                particles[loop_j].pos().z() = bmax.z() + distance_z;
-                particles[loop_j].vel().z() = -particles[loop_j].vel().z();
-                particles[loop_j].hv().z() = -particles[loop_j].hv().z();
+                loop_j.pos.set_z(bmax.z() + distance_z);
+                loop_j.v.set_z(loop_j.v.z());
+                loop_j.hv.set_z(-loop_j.hv.z());
             }
         }
     }
@@ -242,22 +241,23 @@ void Z_boundary_interaction(std::vector<Particle> &particles, Grid &grid) {
 void Y_boundary_interaction(std::vector<Particle> &particles,  Grid &grid) {
 
     double distance_y=0;
+    double test = 0;
     for (int loop_i = 0; loop_i < grid.size.getNumZ(); loop_i++){     //the number of particles in the y axis is num_x * num_z, twice y min and xmax
         for (int loop_j = 0, loop_k=grid.size.getNumX()*(grid.size.getNumY()-1); loop_j < grid.size.getNumX(); loop_j++,loop_k++) {//pared Y_0
-            for (int loop_l : grid.blocks[ loop_j + loop_i * grid.size.getNumX() * grid.size.getNumY()]) {//  block_index = j + i * grid.size.num_z * grid.size.num_y;
-                distance_y = particles[loop_l].pos().y() - bmin.y();
+            for (auto loop_l : grid.blocks[ loop_j + loop_i * grid.size.getNumX() * grid.size.getNumY()]) {//  block_index = j + i * grid.size.num_z * grid.size.num_y;
+                distance_y = loop_l.pos.y() - bmin.y();
                 if (distance_y < 0) {
-                    particles[loop_l].pos().y() = bmin.y() + distance_y;
-                    particles[loop_l].vel().y() = -particles[loop_l].vel().y();
-                    particles[loop_l].hv().y() = -particles[loop_l].hv().y();
+                    loop_l.pos.set_y(bmin.y() + distance_y);
+                    loop_l.v.set_y(loop_l.v.y());
+                    loop_l.hv.set_y(-loop_l.hv.y());
                 }
             }                                                                          //pared Y_max
-            for (int loop_n : grid.blocks[loop_k + loop_i * grid.size.getNumX() * grid.size.getNumY()]) { //  block_index = k + i * grid.size.num_z * grid.size.num_y;
-                distance_y = bmax.y() - particles[loop_n].pos().y();
+            for (auto loop_n : grid.blocks[loop_k + loop_i * grid.size.getNumX() * grid.size.getNumY()]) { //  block_index = k + i * grid.size.num_z * grid.size.num_y;
+                distance_y = bmax.y() - loop_n.pos.y();
                 if (distance_y < 0) {
-                    particles[loop_n].pos().y() = bmax.y() + distance_y;
-                    particles[loop_n].vel().y() = -particles[loop_n].vel().y();
-                    particles[loop_n].hv().y() = -particles[loop_n].hv().y();
+                    loop_n.pos.set_y(bmax.y() + distance_y);
+                    loop_n.v.set_y(-loop_n.v.y());
+                    loop_n.hv.set_y(-loop_n.hv.y());
                 }
             }
         }
@@ -268,20 +268,20 @@ void X_boundary_interaction(std::vector<Particle> &particles,  Grid &grid) {
 
     double distance_x=0;
     for (int loop_i = 0,loop_j =grid.size.getNumX()-1; loop_i < grid.size.getNumZ()*grid.size.getNumY()*grid.size.getNumX(); loop_i+=grid.size.getNumX(), loop_j+=grid.size.getNumX()){
-        for (int loop_l : grid.blocks[loop_i]) {
-            distance_x = particles[loop_j].pos().x()-bmin.x();
+        for (auto loop_l : grid.blocks[loop_i]) {
+            distance_x = loop_l.pos.x()-bmin.x();
             if (distance_x < 0){
-                particles[loop_j].pos().x() = bmin.x() - distance_x;
-                particles[loop_j].vel().x() = -particles[loop_j].vel().x();
-                particles[loop_j].hv().x() = -particles[loop_j].hv().x();
+                loop_l.pos.set_x(bmin.x() - distance_x);
+                loop_l.v.set_x(loop_l.v.x());
+                loop_l.hv.set_x(-loop_l.hv.x());
             }
         }//pared x_max
-        for (int loop_l : grid.blocks[loop_j]) {
-            distance_x = bmax.x() - particles[loop_j].pos().x();
+        for (auto loop_l : grid.blocks[loop_j]) {
+            distance_x = bmax.x() - loop_l.pos.x();
             if (distance_x < 0) {
-                particles[loop_j].pos().x() = bmax.x() + distance_x;
-                particles[loop_j].vel().x() = -particles[loop_j].vel().x();
-                particles[loop_j].hv().x() = -particles[loop_j].hv().x();
+                loop_l.pos.set_x(bmax.x() + distance_x);
+                loop_l.v.set_x(-loop_l.v.x());
+                loop_l.hv.set_x(-loop_l.hv.x());
             }
         }
     }
