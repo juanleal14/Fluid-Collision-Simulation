@@ -56,7 +56,8 @@ public:
     Vect3<double> acceleration;
 
 public:
-    Particle(int id_val, Vect3 pos, Vect3 hvs, Vect3 vel, double d, Vect3 a): id(id_val), pos(pos), hv(hvs), v(vel), density(d), acceleration(a){}
+    Particle() : id(0), pos(0.0, 0.0, 0.0), hv(0.0, 0.0, 0.0), v(0.0, 0.0, 0.0), density(0.0), acceleration(0.0, 0.0, 0.0) {};
+    Particle(int id_val, Vect3<double> pos, Vect3<double> hvs, Vect3<double> vel, double d, Vect3<double> a): id(id_val), pos(pos), hv(hvs), v(vel), density(d), acceleration(a){}
     /*
     Vect3 pos(){return position_values;}
     Vect3 hv(){return hv_values;}
@@ -67,16 +68,5 @@ public:
      */
 };
 
-struct Acceleration{
-    double ax;
-    double ay;
-    double az;
-};
-double distance_squared(Particle p1, Particle p2) {
-    double dx = p1.px - p2.px;
-    double dy = p1.py - p2.py;
-    double dz = p1.pz - p2.pz;
 
-    return dx * dx + dy * dy + dz * dz;
-}
 

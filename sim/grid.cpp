@@ -15,16 +15,16 @@ public:
     [[nodiscard]] double getSizeZ() const { return sizes.z(); }
 
     // Setter methods to modify member variables
-    void setNumX(int x) { num_x = x; }
-    void setNumY(int y) { num_y = y; }
-    void setNumZ(int z) { num_z = z; }
-    void setSizeX(double sx) { size_x = sx; }
-    void setSizeY(double sy) { size_y = sy; }
-    void setSizeZ(double sz) { size_z = sz; }
+    void setNumX(int x) { num_blocks.set_x(x); }
+    void setNumY(int y) { num_blocks.set_y(y); }
+    void setNumZ(int z) { num_blocks.set_z(z); }
+    void setSizeX(double sx) { sizes.set_x(sx); }
+    void setSizeY(double sy) { sizes.set_y(sy); }
+    void setSizeZ(double sz) { sizes.set_z(sz); }
 
 private:
-    Vect3 num_blocks;
-    Vect3 sizes;
+    Vect3 <int> num_blocks; //REVISAR, NO ESTOY SEGURO(JUAN)
+    Vect3<double> sizes;
 };
 
 class Grid {
@@ -90,7 +90,6 @@ std::vector<Block> get_contiguous_blocks(int current_block, Grid &grid){
             }
         }
     }
-
     return contiguous_blocks;
 }
 
@@ -119,9 +118,9 @@ int find_block(Particle particle,GridSize gridSize){
 
 Grid grid_initialization(Initial_Values &initialValues,Block &particles){
     //Bmax bmax();
-    const double boxx = bmax.getFeature1() - bmin.getFeature1();
-    const double boxy = bmax.getFeature2() - bmin.getFeature2();
-    const double boxz = bmax.getFeature3() - bmin.getFeature3();
+    const double boxx = bmax.x() - bmin.x();
+    const double boxy = bmax.y() - bmin.y();
+    const double boxz = bmax.z() - bmin.z();
     GridSize gridSize;
     gridSize.setNumX(floor(boxx/initialValues.getH()));
     gridSize.setNumY(floor(boxy/initialValues.getH()));
@@ -129,7 +128,7 @@ Grid grid_initialization(Initial_Values &initialValues,Block &particles){
     gridSize.setSizeX(boxx/gridSize.getNumX());
     gridSize.setSizeY(boxy/gridSize.getNumY());
     gridSize.setSizeZ(boxz/gridSize.getNumZ());
-    const std::vector<std::vector <int>> blocks = gridCreation(gridSize);
+    const std::vector<Block> blocks = gridCreation(gridSize);
     Grid grid;
     grid.size = gridSize;
     grid.blocks = blocks(grid.size.getNumX(), std::vector<int>(grid.size.getNumY(), 0);
@@ -190,7 +189,7 @@ void particle_collision_with_Y_axis(Grid &grid) {
     }
 }
 
-void particle_collision_with_X_axis(std::vector<Particle> &particles, Grid &grid) {
+void particle_collision_with_X_axis(Grid &grid) {
 
     double x_param = 0 ;
     double increment = 0;
@@ -213,7 +212,7 @@ void particle_collision_with_X_axis(std::vector<Particle> &particles, Grid &grid
 }
 
 
-void Z_boundary_interaction(std::vector<Particle> &particles, Grid &grid) {
+void Z_boundary_interaction(Grid &grid) {
 
     double distance_z = 0;
     for (int loop_i = 0; loop_i < grid.size.getNumX()*grid.size.getNumY(); loop_i++) {   //pared x_0 //the number of particles in the x axis is num_y * num_z twice x min and xmax
@@ -238,7 +237,7 @@ void Z_boundary_interaction(std::vector<Particle> &particles, Grid &grid) {
     }
 }
 
-void Y_boundary_interaction(std::vector<Particle> &particles,  Grid &grid) {
+void Y_boundary_interaction(Grid &grid) {
 
     double distance_y=0;
     double test = 0;
@@ -264,7 +263,7 @@ void Y_boundary_interaction(std::vector<Particle> &particles,  Grid &grid) {
     }
 }
 
-void X_boundary_interaction(std::vector<Particle> &particles,  Grid &grid) {
+void X_boundary_interaction(Grid &grid) {
 
     double distance_x=0;
     for (int loop_i = 0,loop_j =grid.size.getNumX()-1; loop_i < grid.size.getNumZ()*grid.size.getNumY()*grid.size.getNumX(); loop_i+=grid.size.getNumX(), loop_j+=grid.size.getNumX()){
@@ -288,13 +287,13 @@ void X_boundary_interaction(std::vector<Particle> &particles,  Grid &grid) {
 }
 
 
-void particle_collision(std::vector<Particle> &particles, Grid &grid, std::vector <Acceleration> &particles){
-    particle_collision_with_Z_axis(particles,grid,particles);
-    particle_collision_with_Y_axis(particles,grid,particles);
-    particle_collision_with_X_axis(particles,grid,particles);
+void particle_collision(Grid &grid){
+    particle_collision_with_Z_axis(grid);
+    particle_collision_with_Y_axis(grid);
+    particle_collision_with_X_axis(grid);
 }
-void boundary_collision(std::vector<Particle> &particles, Grid &grid){
-    Z_boundary_interaction(particles,grid);
-    Y_boundary_interaction(particles,grid);
-    X_boundary_interaction(particles,grid);
+void boundary_collision(Grid &grid){
+    Z_boundary_interaction(grid);
+    Y_boundary_interaction(grid);
+    X_boundary_interaction(grid);
 }

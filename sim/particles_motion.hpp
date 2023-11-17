@@ -2,7 +2,7 @@
 #include "grid.cpp"
 
 
-void compare_accelerations(Acceleration &a1, Acceleration &a2, long id);
+void compare_accelerations(Vect3 &a1, Vect3 &a2, long id);
 void compare_particle(Particle &p1, Particle &p2,long id);
 void find_elem(int e, std::vector<int> &v);
 void check_trace(std::string trz, Grid &grid, std::vector<Particle> &particles, std::vector<double> &densities, std::vector<Acceleration> &accelerations);
