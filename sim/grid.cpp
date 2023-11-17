@@ -4,15 +4,15 @@
 class GridSize {
 public:
     // Use member initializer list to initialize member variables
-    GridSize(int x = 0, int y = 0, int z = 0, double sx = 0.0, double sy = 0.0, double sz = 0.0): num_x(x), num_y(y), num_z(z), size_x(sx), size_y(sy), size_z(sz) {}
+    GridSize(int x = 0, int y = 0, int z = 0, double sx = 0.0, double sy = 0.0, double sz = 0.0): {}
 
     // Getter methods for member variables
-    [[nodiscard]] int getNumX() const { return num_x; }
-    [[nodiscard]] int getNumY() const { return num_y; }
-    [[nodiscard]] int getNumZ() const { return num_z; }
-    [[nodiscard]] double getSizeX() const { return size_x; }
-    [[nodiscard]] double getSizeY() const { return size_y; }
-    [[nodiscard]] double getSizeZ() const { return size_z; }
+    [[nodiscard]] int getNumX() const { return num_blocks.x(); }
+    [[nodiscard]] int getNumY() const { return num_blocks.y(); }
+    [[nodiscard]] int getNumZ() const { return num_blocks.z(); }
+    [[nodiscard]] double getSizeX() const { return sizes.x(); }
+    [[nodiscard]] double getSizeY() const { return sizes.y(); }
+    [[nodiscard]] double getSizeZ() const { return sizes.z(); }
 
     // Setter methods to modify member variables
     void setNumX(int x) { num_x = x; }
@@ -35,8 +35,8 @@ private:
 
         // Public members for direct access
         GridSize size;
-        std::vector<std::vector<Particle>> blocks;
-    };
+        std::vector<Block> blocks;
+};
 
 /*
 class Bmin {
@@ -45,9 +45,9 @@ public:
     Bmin(double x, double y, double z) : bmin_x(x), bmin_y(y), bmin_z(z) {}
 
     // Getter methods to access individual features
-    [[nodiscard]] double getFeature1() const { return bmin_x; }
-    [[nodiscard]] double getFeature2() const { return bmin_y; }
-    [[nodiscard]] double getFeature3() const { return bmin_z; }
+    [[nodiscard]] double x() const { return bmin_x; }
+    [[nodiscard]] double y() const { return bmin_y; }
+    [[nodiscard]] double z() const { return bmin_z; }
 
 private:
     double bmin_x = bmin_coord_x;
@@ -56,30 +56,35 @@ private:
 };*/
 const Vect3 bmax(bmax_coord_x,bmax_coord_y,bmax_coord_z);
 const Vect3 bmin(bmin_coord_x,bmin_coord_y,bmin_coord_z);
-std::vector <std::vector<int>> gridCreation(GridSize gridSize){
-    std::vector<std::vector<int>> blocks;
-    for (int x = 0; x < (gridSize.getNumX())*(gridSize.getNumY())*(gridSize.getNumZ()); x++){
-        const std::vector <int> new_vector;
-        blocks.push_back(new_vector);
+
+
+
+Grid gridCreation(GridSize gridSize){
+    Grid grid;
+    int total_iteration = (gridSize.getNumX())*(gridSize.getNumY())*(gridSize.getNumZ());
+    for (int loop_x = 0; loop_x < total_iteration; loop_x++){
+        std::vector <Particle> block;
+        grid.blocks.push_back(block);
     }
-    std::cout<<"Before : "<< blocks.size()<<'\n';
-    return blocks;
+    grid.size = gridSize;
+    std::cout<<"Before : "<< grid.blocks.size()<<'\n';
+    return grid;
 }
 
-std::vector<int> get_contiguous_blocks(int current_block, GridSize gsize){
-    std::vector<int> contiguous_blocks;
-    const int block_z = current_block / (gsize.getNumY() * gsize.getNumX());
-    const int block_y = (current_block - block_z * (gsize.getNumY() * gsize.getNumX())) / gsize.getNumX();
-    const int block_x = current_block - (block_z * gsize.getNumY() * gsize.getNumX()) - (block_y * gsize.getNumX());
+std::vector<Block> get_contiguous_blocks(int current_block, Grid &grid){
+    std::vector<Block> contiguous_blocks;
+    const int block_z = current_block / (grid.size.getNumY() * grid.size.getNumX());
+    const int block_y = (current_block - block_z * (grid.size.getNumY() * grid.size.getNumX())) / grid.size.getNumX();
+    const int block_x = current_block - (block_z * grid.size.getNumY() * grid.size.getNumX()) - (block_y * grid.size.getNumX());
 
-    for (int x = -1; x < 2; x++){
-        if ((block_x + x >= 0) && (block_x + x <= gsize.getNumX() - 1)) {
-            for (int y = -1; y < 2; y++) {
-                if ((block_y + y >= 0) && (block_y + y <= gsize.getNumY() - 1)) {
-                    for (int z = -1; z < 2; z++) {
-                        if ((block_z + z >= 0) && (block_z + z <= gsize.getNumZ() - 1)){
-                            const int computed_block = (block_x + x) + (block_y + y) * gsize.getNumX() + (block_z + z) * gsize.getNumY() * gsize.getNumX();
-                            contiguous_blocks.push_back(computed_block);
+    for (int loop_x = -1; loop_x < 2; loop_x++){
+        if ((block_x + loop_x >= 0) && (block_x + loop_x <= grid.size.getNumX() - 1)) {
+            for (int loop_y = -1; loop_y < 2; loop_y++) {
+                if ((block_y + loop_y >= 0) && (block_y + loop_y <= grid.size.getNumY() - 1)) {
+                    for (int loop_z = -1; loop_z < 2; loop_z++) {
+                        if ((block_z + loop_z >= 0) && (block_z + loop_z <= grid.size.getNumZ() - 1)){
+                            const int computed_block = (block_x + loop_x) + (block_y + loop_y) * grid.size.getNumX() + (block_z + loop_z) * grid.size.getNumY() * grid.size.getNumX();
+                            contiguous_blocks.push_back(grid.blocks[computed_block]);
                         }
                     }
                 }
@@ -92,9 +97,9 @@ std::vector<int> get_contiguous_blocks(int current_block, GridSize gsize){
 
 
 int find_block(Particle particle,GridSize gridSize){
-    int block_x = floor((particle.px - bmin.getFeature1())/gridSize.getSizeX());
-    int block_y = floor((particle.py - bmin.getFeature2())/gridSize.getSizeY());
-    int block_z = floor((particle.pz - bmin.getFeature3())/gridSize.getSizeZ());
+    int block_x = floor((particle.pos.x() - bmin.x())/gridSize.getSizeX());
+    int block_y = floor((particle.pos.y() - bmin.y())/gridSize.getSizeY());
+    int block_z = floor((particle.pos.z() - bmin.z())/gridSize.getSizeZ());
     if (block_x < 0){
         block_x = 0;
     } else if (block_x >= gridSize.getNumX()-1) {
@@ -113,7 +118,7 @@ int find_block(Particle particle,GridSize gridSize){
     return num_block;
 }
 
-Grid grid_initialization(Initial_Values &initialValues,std::vector<Particle> &particles){
+Grid grid_initialization(Initial_Values &initialValues,Block &particles){
     //Bmax bmax();
     const double boxx = bmax.getFeature1() - bmin.getFeature1();
     const double boxy = bmax.getFeature2() - bmin.getFeature2();

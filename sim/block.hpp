@@ -6,5 +6,5 @@
 #include "libraries.h"
 #include "progargs.cpp"
 
-std::vector<std::vector<int>> block; //Can it be declared constant?
+//class Block; //Can it be declared constant?
 

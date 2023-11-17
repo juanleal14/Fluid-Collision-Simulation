@@ -5,12 +5,12 @@ public:
     // Constructor to initialize constant features
     Vect3(double xset, double yset, double zset) : xcoord(xset), zcoord(zset), ycoord(yset) {}
     // Getter methods to access individual features
-    [[nodiscard]] double x() const { return xcoord; }
-    [[nodiscard]] double y() const { return ycoord; }
-    [[nodiscard]] double z() const { return zcoord; }
-    [[nodiscard]] static double set_x(double x)  { x = x; }
-    [[nodiscard]] static double set_y(double y)  { y = y; }
-    [[nodiscard]] static double set_z(double z)  { z = z; }
+    [[nodiscard]] T x() const { return xcoord; }
+    [[nodiscard]] T y() const { return ycoord; }
+    [[nodiscard]] T z() const { return zcoord; }
+    void set_x(T x)  { x = x; }
+    void set_y(T y)  { y = y; }
+    void set_z(T z)  { z = z; }
 
     Vect3 operator- (const Vect3 &other) const{
         Vect3 const result(xcoord-other.x(),ycoord-other.y(),zcoord-other.z());

@@ -2,7 +2,8 @@
 #define FLUID_PARTICLES_HPP
 
 
-struct Particle;
-struct Acceleration;
-double distance_squared(Particle p1, Particle p2);
+class Particle;
+//class Vect3;
+
+
 #endif //FLUID_PARTICLES_HPP

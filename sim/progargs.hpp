@@ -17,8 +17,7 @@ constexpr double gravity = 9.8;
 //std::string address = "../new.fld";
 
 
-double h;
-double m;
+
 
 
 //struct Initial_values;
