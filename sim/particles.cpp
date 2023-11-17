@@ -1,14 +1,67 @@
 #include "particles.hpp"
-struct Particle{
-    double px;
-    double py;
-    double pz;
-    double hvx;
-    double hvy;
-    double hvz;
-    double vx;
-    double vy;
-    double vz;
+
+class Vect3 {
+public:
+    // Constructor to initialize constant features
+    Vect3(double xset, double yset, double zset) : xcoord(xset), zcoord(zset), ycoord(yset) {}
+    // Getter methods to access individual features
+    [[nodiscard]] double x() const { return xcoord; }
+    [[nodiscard]] double y() const { return ycoord; }
+    [[nodiscard]] double z() const { return zcoord; }
+    [[nodiscard]] static double set_x(double x)  { x = x; }
+    [[nodiscard]] static double set_y(double y)  { y = y; }
+    [[nodiscard]] static double set_z(double z)  { z = z; }
+
+    Vect3 operator- (const Vect3 &other) const{
+        Vect3 const result(xcoord-other.x(),ycoord-other.y(),zcoord-other.z());
+        return result;
+    }
+
+    Vect3 operator* (const double &c) const{
+        Vect3 const result(xcoord*c,ycoord*c,zcoord*c);
+        return result;
+    }
+
+    Vect3& operator= (Vect3& other){
+        xcoord = other.x();
+        ycoord = other.y();
+        zcoord = other.z();
+
+        return *this;
+    }
+
+    double dist_sqrd(Vect3& other){
+        Vect3 diff = *this - other;
+        return pow(diff.x(),2) + pow(diff.y(),2) + pow(diff.z(),2);
+
+    }
+
+
+private:
+    double xcoord{};
+    double ycoord{};
+    double zcoord{};
+};
+
+
+class Particle{
+public:
+    int id;
+    Vect3 pos;
+    Vect3 hv;
+    Vect3 v;
+    double density;
+    Vect3 acceleration;
+
+public:
+    Particle(int id_val, Vect3 pos, Vect3 hvs, Vect3 vel, double d, Vect3 a): id(id_val), pos(pos), hv(hvs), v(vel), density(d), acceleration(a){}
+    /*
+    Vect3 pos(){return position_values;}
+    Vect3 hv(){return hv_values;}
+    Vect3 vel(){return v_values;}
+    int id(){return id_number;}
+    Vect3 acc(){return acceleration;}
+     */
 };
 
 struct Acceleration{
