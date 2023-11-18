@@ -35,6 +35,7 @@ class Grid {
         Grid()= default;
         Grid(GridSize gsize): size(gsize){
             int const total_iteration = (gsize.getNumX())*(gsize.getNumY())*(gsize.getNumZ());
+            size = gsize;
             blocks = std::vector<Block>(total_iteration);
         }
         Block& operator[](int i){return blocks[i];}
@@ -65,6 +66,49 @@ Grid gridCreation(GridSize gridSize){
     std::cout<<"Before : "<< grid.blocks.size()<<'\n';
     return grid;
 }*/
+Grid initialize_grid(std::ifstream &file,Initial_Values &initialValues,int &counter){ /// Crear Grid con el size correcto y añadir todas las partículas del archivo
+
+    const double boxx = bmax_coord_x - bmin_coord_x;
+    const double boxy = bmax_coord_y - bmin_coord_y;
+    const double boxz = bmax_coord_z - bmin_coord_z;
+    GridSize gridSize;
+    gridSize.setNumX(floor(boxx/initialValues.getH()));
+    gridSize.setNumY(floor(boxy/initialValues.getH()));
+    gridSize.setNumZ(floor(boxz/initialValues.getH()));
+    gridSize.setSizeX(boxx/gridSize.getNumX());
+    gridSize.setSizeY(boxy/gridSize.getNumY());
+    gridSize.setSizeZ(boxz/gridSize.getNumZ());
+    Grid grid(gridSize) ;
+
+    while(file.peek()!=EOF){
+        counter ++;
+        grid.add_particle(read_particle(file));
+    }
+    std::cout<<"Total particles read from file = "<<counter<<'\n';
+    return grid;
+}
+
+
+Grid initial_read(const std::string& file_address,Initial_Values &initialValues){
+    //Read file
+    std::ifstream file(file_address, std::ios::binary);
+    int counter = 0;
+    if (!file.is_open()) { //Check error opening
+        std::cerr<<"Error: Cannot open " << file_address <<" for reading";
+        exit (-3);
+    }
+    initialValues = read_general_info(file);//call to a function to read parameters
+    std::cout<<"Lee bien ppm np";
+    Grid grid = initialize_grid(file,initialValues,counter);
+    if(counter == 0){
+        std::cout<< "Error : Invalid number of particles: " << counter <<".";
+    }
+    else if(counter != initialValues.getNp()){
+        std::cout<<"Error : Number of particles mismatch. Header " << initialValues.getNp() << " Found " << counter <<".";
+    }
+    file.close();
+    return grid;
+}
 
 std::vector<Block> get_contiguous_blocks(int current_block, Grid &grid){
     std::vector<Block> contiguous_blocks;

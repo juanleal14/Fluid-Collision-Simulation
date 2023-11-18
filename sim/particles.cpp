@@ -21,33 +21,32 @@ public:
      }
 
     Vect3<T> operator- (Vect3<T>& other) {///Arreglar estooOo
-        Vect3<T> result(coords[0] - other[0], coords[1] - other[1], coords[2] - other[2]);
+        Vect3<T>  result(coords[0] - other[0], coords[1] - other[1], coords[2] - other[2]);
         return result;
     }
 
-    Vect3<T> operator* (const double &c) const{
+    Vect3<T> operator* (double &c) {
         Vect3<T> result(coords[0]*c,coords[1]*c,coords[2]*c);
         return result;
     }
 
-    Vect3<T>& operator= (Vect3<T> const &other){ ///Operator =
+    Vect3<T>& operator= (Vect3<T> & other) { ///Operator =
         std::copy(coords.begin(),coords.end(),&other[0]);
         return *this;
     }
 
-     void operator+= (Vect3<T>& other) {
-        coords[0] += other[0];
-        coords[1] += other[1];
-        coords[2] += other[2];
+     Vect3<T>& operator+= (Vect3<T>& other) {
+         Vect3<T> result(coords[0]+other[0],coords[1]+other[1],coords[2]*other[2]);
+         return result;
      }
 
 
     bool operator== (Vect3<T> &other){ ///Operator =
-        bool result = (coords[0]==other[0]) && (coords[1]==other[1]) && (coords[2]==other[2]);
+        bool  result = (coords[0]==other[0]) && (coords[1]==other[1]) && (coords[2]==other[2]);
         return result;
     }
     double dist_sqrd(Vect3& other){
-        const Vect3<T> diff = *this - other;
+         Vect3<T> diff = *this - other;
         return pow(diff.x(),2) + pow(diff.y(),2) + pow(diff.z(),2);
 
     }

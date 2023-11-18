@@ -5,8 +5,3 @@
 #include "libraries.hpp"
 
 class Particle;
-//class Vect3;
-class GridSize;
-class Grid;
-
-

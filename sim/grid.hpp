@@ -15,8 +15,11 @@
 //class Bmin bmin();
 //struct GridSize;
 //struct Grid;
-class vect3;
+class GridSize;
+class Grid;
 
+Grid initialize_grid(std::ifstream &file,Initial_Values &initialValues,int &counter);
+Grid initial_read(const std::string& file_address,Initial_Values &initialValues);
 
 std::vector<Block> get_contiguous_blocks(int current_block, GridSize gsize);
 Grid gridCreation(GridSize gridSize);
