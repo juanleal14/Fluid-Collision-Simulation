@@ -10,11 +10,7 @@
     }
     int num_blocks;
     file.read(reinterpret_cast<char*>(&num_blocks), sizeof(int));//NOLINT
-    std::vector<std::vector<Particle>> blocks(num_blocks);
-    grid.blocks = blocks;
-    particles = std::vector<Particle> (i_v.getNp());
-
-
+    std::vector<Block> blocks(num_blocks);
     long particles_in_block = 0;
     long part_id = 0;
     std::cout<<"Grid.size = "<<grid.blocks.size()<<" total particles = "<<particles.size()<<'\n';
@@ -106,9 +102,9 @@
         std::cout<<"Id "<<id<<" not found in grid block\n";
         exit(-1);
     }
-}*/
+}
 
-/*void check_trace(std::string trz, Grid &grid){
+void check_trace(std::string trz, Grid &grid){
     std::ifstream file(trz, std::ios::binary);
     if (!file.is_open()) { //Check error opening
         std::cout<<"Error: Cannot open trace file: " << trz <<" for reading";
@@ -186,7 +182,7 @@
     std::cout<<"\nTrace is equal to current state of the simulation\n";
 
     file.close();
-}*/
+}
 
 void write_to_file(const std::string& output_file_address,Grid grid, Initial_Values &initialValues){
     //Write to the file all the new values
