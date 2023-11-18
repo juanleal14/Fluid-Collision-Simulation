@@ -34,6 +34,14 @@ public:
         std::copy(coords.begin(),coords.end(),&other[0]);
         return *this;
     }
+
+     void operator+= (Vect3<T>& other) {
+        coords[0] += other[0];
+        coords[1] += other[1];
+        coords[2] += other[2];
+     }
+
+
     bool operator== (Vect3<T> &other){ ///Operator =
         bool result = (coords[0]==other[0]) && (coords[1]==other[1]) && (coords[2]==other[2]);
         return result;
@@ -64,6 +72,7 @@ public:
                     (density == other.density) && (acceleration == other.acceleration);
         return cond;
     }
+
 
     Particle() : id(0), pos(0.0, 0.0, 0.0), hv(0.0, 0.0, 0.0), v(0.0, 0.0, 0.0), density(0.0),
                  acceleration(0.0, 0.0, 0.0) {};
