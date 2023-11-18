@@ -6,14 +6,15 @@
 int main(int argc, char** argv) {
     check_command_errors(argc,argv);
     Initial_Values initialValues;
-    const std::string text = argv[2];
-    Grid grid = initial_read(argv[2],initialValues);
+    //const std::string text = argv[2];
+    std::span const args_view{argv, static_cast<std::size_t>(argc)};
+    std::vector<std::string> const arguments{args_view.begin() + 1, args_view.end()};
+    check_command_errors(argc,arguments);
+    Grid grid = initial_read(arguments[2],initialValues);
     std::cout<<"\nNum particles: "<<grid.size()<<'\n';
-    //h = initialValues.getH();
-    //m = initialValues.getM();
-    Grid grid = grid_initialization(initialValues,myparticles);
-    simulate(1,myparticles,grid);
-    //write_to_file(argv[3],myparticles,initialValues);
+    Grid grid = grid_initialization(initialValues);
+    simulate(1,grid);
+    write_to_file(arguments[3],grid,initialValues);
 
 // TRAZE  BOUNDARY ITERATION
     std::vector<double> densities;
