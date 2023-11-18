@@ -25,9 +25,9 @@ void load_trace(std::string trz, Grid &grid, Initial_Values &initialValues){
             grid.blocks[loop_i][loop_p].pos.set_x(value_double);
             file.read(reinterpret_cast<char*>(&value_double, sizeof(double));//NOLINT
             grid.blocks[loop_i][loop_p].pos.set_y(value_double);
-            file.read(reinterpret_cast<char*>(&value_double, sizeof(double));//NOLINT
-            grid.blocks[loop_i][loop_p].pos.set_z(value_double);
             file.read(reinterpret_cast<char*>(&value_double), sizeof(double));//NOLINT
+            grid.blocks[loop_i][loop_p].pos.set_z(value_double);
+            file.read(reinterpret_cast<char*>(&value_double, sizeof(double));//NOLINT
             grid.blocks[loop_i][loop_p].hv.set_x(value_double);
             file.read(reinterpret_cast<char*>(&particles[part_id].hv().y()), sizeof(double));//NOLINT
             file.read(reinterpret_cast<char*>(&particles[part_id].hv().z()), sizeof(double));//NOLINT
