@@ -3,18 +3,11 @@
 
 #endif //FLUID_OPTIMIZATION_GRID_H
 
-#include "libraries.h"
-#include "block.hpp"
-#include "grid.cpp"
+#include "block.cpp"
+
 
 //std::vector<double> bmax = {0.065, 0.1, 0.065};
-constexpr double bmax_coord_x = 0.065;
-constexpr double bmax_coord_y = 0.1;
-constexpr double bmax_coord_z = 0.065;
-constexpr double bmin_coord_x = -0.065;
-constexpr double bmin_coord_y = -0.08;
-constexpr double bmin_coord_z = -0.065;
-const double distance_minimum = pow(10, -10);
+
 
 //class Bmax;
 //class Bmax bmax();
@@ -24,13 +17,14 @@ const double distance_minimum = pow(10, -10);
 //struct GridSize;
 //struct Grid;
 class vect3;
-class GridSize;
-class Grid;
+
 
 std::vector<Block> get_contiguous_blocks(int current_block, GridSize gsize);
 Grid gridCreation(GridSize gridSize);
 int find_block(Particle particle,GridSize gridSize);
 Grid grid_initialization(Initial_Values &initialValues,std::vector<Particle> &particles);
+Grid initialize_grid(std::ifstream &file,Initial_Values &initialValues);
+Grid initial_read(const std::string& file_address,Initial_Values &initialValues);
 
 void particle_collision_with_X_axis(Grid &grid);
 void particle_collision_with_Y_axis(Grid &grid);

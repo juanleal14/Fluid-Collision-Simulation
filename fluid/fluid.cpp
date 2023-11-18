@@ -7,8 +7,8 @@ int main(int argc, char** argv) {
     check_command_errors(argc,argv);
     Initial_Values initialValues;
     const std::string text = argv[2];
-    std::vector<Particle> myparticles = initial_read(argv[2],initialValues);
-    std::cout<<"\nNum particles: "<<myparticles.size()<<'\n';
+    Grid grid = initial_read(argv[2],initialValues);
+    std::cout<<"\nNum particles: "<<grid.size()<<'\n';
     //h = initialValues.getH();
     //m = initialValues.getM();
     Grid grid = grid_initialization(initialValues,myparticles);
