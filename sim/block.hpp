@@ -5,5 +5,3 @@
 
 #include "progargs.cpp"
 using Block = std::vector<Particle>;
-//class Block; //Can it be declared constant?
-

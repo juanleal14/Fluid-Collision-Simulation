@@ -18,9 +18,9 @@ void load_trace(std::string trz, Grid &grid, std::vector<Particle> &particles, I
     long particles_in_block = 0;
     long part_id = 0;
     std::cout<<"Grid.size = "<<grid.blocks.size()<<" total particles = "<<particles.size()<<'\n';
-    for (int i = 0; i<num_blocks;i++){
+    for (int loop_i = 0; loop_i<num_blocks;loop_i++){
         file.read(reinterpret_cast<char*>(&particles_in_block), sizeof(long));//NOLINT
-        for (int p = 0; p<particles_in_block;p++){//NOLINT
+        for (int loop_p = 0; loop_p<particles_in_block;loop_p++){//NOLINT
             file.read(reinterpret_cast<char*>(&part_id), sizeof(long));//NOLINT
             grid[loop_i].push_back(part_id);
             file.read(reinterpret_cast<char*>(&particles[part_id].pos().x()), sizeof(double));//NOLINT
@@ -365,9 +365,9 @@ void acceleration_transfer(std::vector<Particle> &particles, Grid &grid, Initial
                         double dist_squared = distance_squared(particle_i, particle_j);
                         if (dist_squared < (pow(h, 2))) {
                             double distij = sqrt(std::max(dist_squared, pow(10,-12))); /// In these 4 lines calculate distij as stated in project and update accelerations
-                            grid[i].acceleration.x() += ((particle_i.pos.x() - particle_j.pos.x()) * (15 / (std::numbers::particle_i*pow(initialValues.getH(),6))) * (3 * initialValues.getM() * stiff_pressure/2) * pow(initialValues.getH()-distij,2)/distij * (densities[particle_i_index] + densities[particle_j_index] - 2*global_density) + (particle_j.v.x() - particle_i.v.x()) * (45/(std::numbers::particle_i*pow(initialValues.getH(),6)) ) * viscosity * initialValues.getM()) / (densities[particle_i_index] * densities[particle_j_index]);
-                            grid[i].acceleration.y() += ((particle_i.pos.y() - particle_j.pos.y()) * (15 / (std::numbers::particle_i*pow(initialValues.getH(),6))) * (3 * initialValues.getM() * stiff_pressure/2) * pow(initialValues.getH()-distij,2)/distij * (densities[particle_i_index] + densities[particle_j_index] - 2*global_density) + (particle_j.v.y() - particle_i.v.y()) * (45/(std::numbers::particle_i*pow(initialValues.getH(),6)) ) * viscosity * initialValues.getM()) / (densities[particle_i_index] * densities[particle_j_index]);
-                            grid[i].acceleration.y() += ((particle_i.pos.z() - particle_j.pos.z()) * (15 / (std::numbers::particle_i*pow(initialValues.getH(),6))) * (3 * initialValues.getM() * stiff_pressure/2) * pow(initialValues.getH()-distij,2)/distij * (densities[particle_i_index] + densities[particle_j_index] - 2*global_density) + (particle_j.v.z() - particle_i.v.z()) * (45/(std::numbers::particle_i*pow(initialValues.getH(),6)) ) * viscosity * initialValues.getM()) / (densities[particle_i_index] * densities[particle_j_index]);
+                            grid[i].acceleration.x() += ((particle_i.pos.x() - particle_j.pos.x()) * (15 / (std::numbers::pi*pow(initialValues.getH(),6))) * (3 * initialValues.getM() * stiff_pressure/2) * pow(initialValues.getH()-distij,2)/distij * (densities[particle_i_index] + densities[particle_j_index] - 2*global_density) + (particle_j.v.x() - particle_i.v.x()) * (45/(std::numbers::pi*pow(initialValues.getH(),6)) ) * viscosity * initialValues.getM()) / (densities[particle_i_index] * densities[particle_j_index]);
+                            grid[i].acceleration.y() += ((particle_i.pos.y() - particle_j.pos.y()) * (15 / (std::numbers::pi*pow(initialValues.getH(),6))) * (3 * initialValues.getM() * stiff_pressure/2) * pow(initialValues.getH()-distij,2)/distij * (densities[particle_i_index] + densities[particle_j_index] - 2*global_density) + (particle_j.v.y() - particle_i.v.y()) * (45/(std::numbers::pi*pow(initialValues.getH(),6)) ) * viscosity * initialValues.getM()) / (densities[particle_i_index] * densities[particle_j_index]);
+                            grid[i].acceleration.y() += ((particle_i.pos.z() - particle_j.pos.z()) * (15 / (std::numbers::pi*pow(initialValues.getH(),6))) * (3 * initialValues.getM() * stiff_pressure/2) * pow(initialValues.getH()-distij,2)/distij * (densities[particle_i_index] + densities[particle_j_index] - 2*global_density) + (particle_j.v.z() - particle_i.v.z()) * (45/(std::numbers::pi*pow(initialValues.getH(),6)) ) * viscosity * initialValues.getM()) / (densities[particle_i_index] * densities[particle_j_index]);
                         }
                     }
                 }

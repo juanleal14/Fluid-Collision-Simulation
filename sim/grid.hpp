@@ -1,7 +1,6 @@
 #ifndef FLUID_OPTIMIZATION_GRID_H
 #define FLUID_OPTIMIZATION_GRID_H
-
-#endif //FLUID_OPTIMIZATION_GRID_H
+#endif
 
 #include "block.cpp"
 
@@ -35,4 +34,6 @@ void Y_boundary_interaction(Grid &grid);
 void Z_boundary_interaction(Grid &grid);
 
 void particle_collision(Grid &grid);
-void boundary_collision(Grid &grid);
+void boundary_collision(Grid &grid);;
+
+
