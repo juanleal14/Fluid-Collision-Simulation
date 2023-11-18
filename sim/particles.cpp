@@ -14,6 +14,7 @@ public:
     void set_z(T z)  { coords[2] = z; }
     void set(T x, T y, T z) { coords[0] = x; coords[1] = y; coords[2] = z; }
     T& operator[](int i){return coords[i];}
+    //const T& operator[](int const i){return coords[i];}
 
     Vect3<T> operator+ (Vect3<T>& other) {
         Vect3<T> result(coords[0]+other[0],coords[1]+other[1],coords[2]+other[2]);
@@ -71,6 +72,16 @@ public:
         bool cond = (id == other.id) && (pos == other.pos) && (hv == other.hv) && (v == other.v) &&
                     (density == other.density) && (acceleration == other.acceleration);
         return cond;
+    }
+
+    Particle& operator= (Particle & other){
+        id = other.id;
+        pos = other.pos;
+        hv = other.hv;
+        v = other.v;
+        density = other.density;
+        acceleration = other.acceleration;
+        return *this;
     }
 
 

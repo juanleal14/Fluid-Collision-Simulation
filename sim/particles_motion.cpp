@@ -54,7 +54,8 @@ void load_trace(std::string trz, Grid &grid_trz, Initial_Values &initialValues){
 }
 
 
-void compare_accelerations(Particle &p1, Particle &p2, long id){
+void compare_accelerations(Particle &p1, Particle &p2){
+    long id = p1.id;
     if (p1.acceleration.x()!=p2.acceleration.x()){
         std::cout<<"id = "<<id<<" "<<"Accelerations x() differ, a1.x() = "<<p1.acceleration.x()<<" a2.x() = "<<p2.acceleration.x()<<'\n';
         //exit(-1);
@@ -69,14 +70,18 @@ void compare_accelerations(Particle &p1, Particle &p2, long id){
     }
 }
 
-void compare_particle(Particle &p1, Particle &p2,long id){
-    if (p1.pos.x() != p2.pos.x()){
+void compare_particle(Particle &p1, Particle &p2){
+    long id = p1.id;
+    bool if_found =0;
+    if (p1.density != p2.density){
+        std::cout<<"id = "<<id<<" "<<"Particles x pos differ, p1.pos.x() = "<<p1.density<<" p2.pos.x() = "<<p2.density<<'\n';
+        if_found =1;
+    }if (p1.pos.x() != p2.pos.x()){
         std::cout<<"id = "<<id<<" "<<"Particles x pos differ, p1.pos.x() = "<<p1.pos.x()<<" p2.pos.x() = "<<p2.pos.x()<<'\n';
-        //exit(-1);
+        if_found =1;
     }if (p1.pos.y() != p2.pos.y()) {
-        std::cout << "id = " << id << " " << "Particles y pos differ, p1.pos.y() = " << p1.pos.y() << " p2.pos.y() = "
-                  << p2.pos.y() << '\n';
-        //exit(-1);
+        std::cout << "id = " << id << " " << "Particles y pos differ, p1.pos.y() = " << p1.pos.y() << " p2.pos.y() = "<< p2.pos.y() << '\n';
+        if_found =1;
     }if (p1.pos.z() != p2.pos.z()){
         std::cout<<"id = "<<id<<" "<<"Particles z pos differ, p1.pos.z() = "<<p1.pos.z()<<" p2.pos.z() = "<<p2.pos.z()<<'\n';
         //exit(-1);
@@ -93,28 +98,35 @@ void compare_particle(Particle &p1, Particle &p2,long id){
         std::cout<<"id = "<<id<<" "<<"Particles vx pos differ, p1.v.x() = "<<p1.v.x()<<" p2.v.x() = "<<p2.v.x()<<'\n';
         //exit(-1);
     }if (p1.v.y() != p2.v.y()) {
-        std::cout << "id = " << id << " " << "Particles vy pos differ, p1.v.y() = " << p1.v.y() << " p2.v.y() = "
-                  << p2.v.y() << '\n';
-        //exit(-1);
+        std::cout << "id = " << id << " " << "Particles vy pos differ, p1.v.y() = " << p1.v.y() << " p2.v.y() = "<< p2.v.y() << '\n';
+        if_found =1;
     }if (p1.v.z() != p2.v.z()){
-        std::cout << "id = " << id << " " << "Particles vz pos differ, p1.v.z() = " << p1.v.z() << " p2.v.z() = "
-                  << p2.v.z() << '\n';
-        //exit(-1);
+        std::cout << "id = " << id << " " << "Particles vz pos differ, p1.v.z() = " << p1.v.z() << " p2.v.z() = "<< p2.v.z() << '\n';
+        if_found =1;
+    }if (p1.acceleration.x() != p2.acceleration.x()){
+        std::cout<<"id = "<<id<<" "<<"Particles vx pos differ, p1.v.x() = "<<p1.acceleration.x()<<" p2.v.x() = "<<p2.acceleration.x()<<'\n';
+        if_found =1;
+    }if (p1.acceleration.y() != p2.acceleration.y()) {
+        std::cout << "id = " << id << " " << "Particles vy pos differ, p1.v.y() = " << p1.acceleration.y() << " p2.v.y() = "<< p2.acceleration.y() << '\n';
+        if_found =1;
+    }if (p1.acceleration.z() != p2.acceleration.z()){
+        std::cout << "id = " << id << " " << "Particles vz pos differ, p1.v.z() = " << p1.acceleration.z() << " p2.v.z() = "<< p2.acceleration.z() << '\n';
+        if_found =1;
+    }if (if_found==1){
+        exit(-1);
     }
 }
 
-void find_elem(long id, Block &block){
+Particle find_elem(long id, Block &block){
     ///Only works if both vectors have same size
-    int found = 0;
     for (auto loop_i : block){
         if(id == loop_i.id){
-            found = 1;
+            return loop_i;
         }
     }
-    if (found==0){
-        std::cout<<"Id "<<id<<" not found in grid block\n";
-        exit(-1);
-    }
+
+    std::cout<<"Id "<<id<<" not found in grid block\n";
+    exit(-1);
 }
 
 void check_trace(std::string trz, Grid &grid){
@@ -151,8 +163,10 @@ void check_trace(std::string trz, Grid &grid){
         for (auto current_particle : current_block){
             file.read(reinterpret_cast<char*>(&id), sizeof(long));//NOLINT
             //cout<<"Particle "<<id<<" in block["<<i<<"] : ";
-            find_elem(id,current_block);
+
+            Particle part_in_our_grid = find_elem(id,current_block);
             part.id = id;
+
             file.read(reinterpret_cast<char*>(&write_value), sizeof(double));//NOLINT
             part.pos.set_x(write_value);
             file.read(reinterpret_cast<char*>(&write_value), sizeof(double));//NOLINT
@@ -179,10 +193,11 @@ void check_trace(std::string trz, Grid &grid){
             part.acceleration.set_y(write_value);
             file.read(reinterpret_cast<char*>(&write_value), sizeof(double));//NOLINT
             part.acceleration.set_z(write_value);
-            if((current_particle != part)){
+            /*if((current_particle != part)){
                 std::cout << "\nParticles " << current_particle.id << " and " << part.id << " are not the same." << "I am in block: " << counter<<"\n";
                 exit(-1);
-            }
+            }*/
+            compare_particle(part_in_our_grid,current_particle);
         }
         counter +=1;
     }
