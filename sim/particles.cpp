@@ -59,7 +59,6 @@ public:
         return cond;
     }
 
-
     Particle() : id(0), pos(0.0, 0.0, 0.0), hv(0.0, 0.0, 0.0), v(0.0, 0.0, 0.0), density(0.0), acceleration(0.0, 0.0, 0.0) {};
     Particle(int id_val, Vect3<double> pos, Vect3<double> hvs, Vect3<double> vel, double d, Vect3<double> a): id(id_val), pos(pos), hv(hvs), v(vel), density(d), acceleration(a){}
     double distance_to(Particle& p2){return pos.dist_sqrd(p2.pos);

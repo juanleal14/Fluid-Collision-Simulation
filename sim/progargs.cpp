@@ -29,7 +29,7 @@ private:
 
 
 
-void check_command_errors(int argc,char** argv) {
+void check_command_errors(int argc,std::vector<std::string> arguments) {
     if (argc != 4) {
         std::cerr << "Error: Invalid number of arguments: " << argc << ".";
         exit(-1);
@@ -37,15 +37,15 @@ void check_command_errors(int argc,char** argv) {
     //Is integer
     try {
         // Convert the input parameter to an integer
-        int value = std::stoi(argv[1]);
+        int value = std::stoi(arguments[1]);
         // Use the integer value as needed
-        std::cout << "The entered integer is: " << value << std::endl;
+        std::cout << "The entered integer is: " << value << "\n";
         if (value < 0) {
-            std::cerr << "Error: The entered integer is negative." << std::endl;
+            std::cerr << "Error: The entered integer is negative.\n";
             exit(-2);
         }
     } catch (const std::invalid_argument& e) {
-        std::cerr << "Error: The entered parameter is not an integer." << std::endl;
+        std::cerr << "Error: The entered parameter is not an integer.\n";
         exit(-1);
     }
 }
@@ -55,11 +55,12 @@ Initial_Values read_general_info(std::ifstream &file){
     // Read ppm and np
     //cap 10-11
     Initial_Values initialValues;
-    double read_value;
+    float read_value;
     file.read(reinterpret_cast<char*>(&read_value), sizeof(float));//NOLINT
     initialValues.setPpm(read_value);
-    file.read(reinterpret_cast<char*>(&read_value), sizeof(int));//NOLINT
-    initialValues.setNp(read_value);
+    int read_value2;
+    file.read(reinterpret_cast<char*>(&read_value2), sizeof(int));//NOLINT
+    initialValues.setNp(read_value2);
     initialValues.setM(global_density/pow(initialValues.getPpm(),3));
     initialValues.setH(const_r/initialValues.getPpm());
     std::cout << "ppm: " << initialValues.getPpm() << ", np: " << initialValues.getNp() << std::endl;
@@ -97,7 +98,6 @@ Grid grid_initialization(Initial_Values &initialValues){
 Particle read_particle(std::ifstream & file){ ///Read only one particle from file
     float value = 0;
     Particle particle;
-
     file.read(reinterpret_cast<char*>(&value), sizeof(float));//NOLINT
     particle.pos.set_x(static_cast<double>(value));
     file.read(reinterpret_cast<char*>(&value), sizeof(float));//NOLINT

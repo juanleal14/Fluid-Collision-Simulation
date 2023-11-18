@@ -51,24 +51,6 @@ class Grid {
 
 };
 
-/*
-class Bmin {
-public:
-    // Constructor to initialize constant features
-    Bmin(double x, double y, double z) : bmin_x(x), bmin_y(y), bmin_z(z) {}
-
-    // Getter methods to access individual features
-    [[nodiscard]] double x() const { return bmin_x; }
-    [[nodiscard]] double y() const { return bmin_y; }
-    [[nodiscard]] double z() const { return bmin_z; }
-
-private:
-    double bmin_x = bmin_coord_x;
-    double bmin_y = bmin_coord_y;
-    double bmin_z = bmin_coord_z;
-};*/
-//const Vect3 bmax(bmax_coord_x,bmax_coord_y,bmax_coord_z);
-//const Vect3 bmin(bmin_coord_x,bmin_coord_y,bmin_coord_z);
 
 ///gridCreation implementada dentro de clase Grid mediante default constructor
 /*

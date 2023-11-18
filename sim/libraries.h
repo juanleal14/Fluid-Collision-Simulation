@@ -10,6 +10,7 @@
 #include <vector>
 #include <array>
 #include <numbers>
+#include <span>
 
 
 constexpr double bmax_coord_x = 0.065;
