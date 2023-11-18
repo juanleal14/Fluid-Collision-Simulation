@@ -162,7 +162,8 @@ void check_trace(std::string trz, Grid &grid){
         }
         for (int i = 0; i < current_block.size();i++){
             file.read(reinterpret_cast<char*>(&id), sizeof(long));//NOLINT
-            //cout<<"Particle "<<id<<" in block["<<i<<"] : ";
+            Particle part_in_our_grid = find_elem(id,current_block);
+            //std::cout<<"Particle "<<part_in_our_grid.id<<" in block["<<"] : ";
 
 
             part.id = id;
