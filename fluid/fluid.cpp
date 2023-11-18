@@ -20,7 +20,7 @@ int main(int argc, char** argv) {
     //std::vector<Vect3<double>> accelerations;
 
     //load_trace("./trz/small/acctransf-base-1.trz",grid,initialValues);
-    particle_collision(grid);
+    //particle_collision(grid);
     //check_trace("./trz/small/partcol-base-1.trz",grid,);
     //check_trace("./trz/small/boundint-base-1.trz",grid,myparticles,densities,accelerations);
 }

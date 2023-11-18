@@ -17,5 +17,3 @@ void densities_transform(Grid &grid);
 void densities_increase(Grid &grid);
 void simulate(int nsteps, Grid &grid);
 
-
-
