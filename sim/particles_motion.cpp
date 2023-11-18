@@ -2,7 +2,7 @@
 
 
 
-void load_trace(std::string trz, Grid &grid, std::vector<Particle> &particles, Initial_Values &i_v){
+/*void load_trace(std::string trz, Grid &grid, std::vector<Particle> &particles, Initial_Values &i_v){
     std::ifstream file(trz, std::ios::binary);
     if (!file.is_open()) { //Check error opening
         std::cout<<"Error: Cannot open trace file: " << trz <<" for reading";
@@ -42,10 +42,10 @@ void load_trace(std::string trz, Grid &grid, std::vector<Particle> &particles, I
         }
     }
     std::cout<<"\nTrace loaded\n";
-}
+}*/
 
 
-void compare_accelerations(Particle &p1, Particle &p2, long id){
+/*void compare_accelerations(Particle &p1, Particle &p2, long id){
     if (p1.acceleration.x()!=p2.acceleration.x()){
         std::cout<<"id = "<<id<<" "<<"Accelerations x() differ, a1.x() = "<<p1.acceleration.x()<<" a2.x() = "<<p2.acceleration.x()<<'\n';
         //exit(-1);
@@ -58,9 +58,9 @@ void compare_accelerations(Particle &p1, Particle &p2, long id){
         std::cout<<"id = "<<id<<" "<<"Accelerations az differ, a1.az = "<<p1.acceleration.z()<<" a2.az = "<<p2.acceleration.z()<<'\n';
         //exit(-1);
     }
-}
+}*/
 
-void compare_particle(Particle &p1, Particle &p2,long id){
+/*void compare_particle(Particle &p1, Particle &p2,long id){
     if (p1.pos.x() != p2.pos.x()){
         std::cout<<"id = "<<id<<" "<<"Particles x pos differ, p1.pos.x() = "<<p1.pos.x()<<" p2.pos.x() = "<<p2.pos.x()<<'\n';
         //exit(-1);
@@ -92,9 +92,9 @@ void compare_particle(Particle &p1, Particle &p2,long id){
                   << p2.v.z() << '\n';
         //exit(-1);
     }
-    }
+}*/
 
-void find_elem(long id, Block &block){
+/*void find_elem(long id, Block &block){
     ///Only works if both vectors have same size
     int found = 0;
     for (auto i : block){
@@ -106,9 +106,9 @@ void find_elem(long id, Block &block){
         std::cout<<"Id "<<id<<" not found in grid block\n";
         exit(-1);
     }
-}
+}*/
 
-void check_trace(std::string trz, Grid &grid){
+/*void check_trace(std::string trz, Grid &grid){
     std::ifstream file(trz, std::ios::binary);
     if (!file.is_open()) { //Check error opening
         std::cout<<"Error: Cannot open trace file: " << trz <<" for reading";
@@ -186,7 +186,7 @@ void check_trace(std::string trz, Grid &grid){
     std::cout<<"\nTrace is equal to current state of the simulation\n";
 
     file.close();
-}
+}*/
 
 void write_to_file(const std::string& output_file_address,Grid grid, Initial_Values &initialValues){
     //Write to the file all the new values
