@@ -1,3 +1,6 @@
+#ifndef FLUID_PARTICLES_MOTION_H
+#define FLUID_PARTICLES_MOTION_H
+#endif
 #include "grid.cpp"
 
 

@@ -1,8 +1,7 @@
 #include "particles.hpp"
 
  template <typename T>
- class Vect3
- {
+ class Vect3{
 public:
     // Constructor to initialize constant features
     Vect3(T xset, T yset, T zset) : coords({xset,yset,zset})  {}
@@ -15,8 +14,14 @@ public:
     void set_z(T z)  { coords[2] = z; }
     void set(T x, T y, T z) { coords[0] = x; coords[1] = y; coords[2] = z; }
     T& operator[](int i){return coords[i];}
+
+     Vect3 operator+ (Vect3<T>& other) {
+         Vect3 result(coords[0]+other[0],coords[1]+other[1],coords[2]+other[2]);
+         return result;
+     }
+
     Vect3 operator- (Vect3<T>& other) {
-        Vect3 result(coords[0]-other[0],coords[1]-other[1],coords[2]-other[2]);
+        Vect3 result(coords[0] - other[0], coords[1] - other[1], coords[2] - other[2]);
         return result;
     }
 
@@ -45,23 +50,26 @@ private:
 };
 
 
-class Particle{
+class Particle {
 public:
-        int id;
+    int id;
     Vect3<double> pos;
     Vect3<double> hv;
     Vect3<double> v;
     double density;
     Vect3<double> acceleration;
 
-    bool operator== (Particle &other){ ///Operator =
-        bool cond = (id == other.id) && (pos == other.pos) && (hv == other.hv) && (v == other.v) && (density == other.density) && (acceleration == other.acceleration);
+    bool operator==(Particle &other) { ///Operator =
+        bool cond = (id == other.id) && (pos == other.pos) && (hv == other.hv) && (v == other.v) &&
+                    (density == other.density) && (acceleration == other.acceleration);
         return cond;
     }
 
-    Particle() : id(0), pos(0.0, 0.0, 0.0), hv(0.0, 0.0, 0.0), v(0.0, 0.0, 0.0), density(0.0), acceleration(0.0, 0.0, 0.0) {};
-    Particle(int id_val, Vect3<double> pos, Vect3<double> hvs, Vect3<double> vel, double d, Vect3<double> a): id(id_val), pos(pos), hv(hvs), v(vel), density(d), acceleration(a){}
-    double distance_to(Particle& p2){return pos.dist_sqrd(p2.pos);
+    Particle() : id(0), pos(0.0, 0.0, 0.0), hv(0.0, 0.0, 0.0), v(0.0, 0.0, 0.0), density(0.0),
+                 acceleration(0.0, 0.0, 0.0) {};
+
+    Particle(int id_val, Vect3<double> pos, Vect3<double> hvs, Vect3<double> vel, double d, Vect3<double> a) : id(
+            id_val), pos(pos), hv(hvs), v(vel), density(d), acceleration(a) {}
 
     double distance_to(Particle &p2) {
         return pos.dist_sqrd(p2.pos);

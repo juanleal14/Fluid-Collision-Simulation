@@ -299,14 +299,14 @@ void particles_motion(Grid &grid){
 }*/
 void densities_increase(Grid &grid, Initial_Values initialValues){ /// Cambiar p por part, porque ya hay una varibale gloabl p
     std::vector<Block> contiguous_blocks;
-;    for (int i_current_b = 0; i_current_b < grid.blocks.size();i_current_b++){ ///Go through all blocks
+    for (int i_current_b = 0; i_current_b < grid.blocks.size();i_current_b++){ ///Go through all blocks
         contiguous_blocks = get_contiguous_blocks(i_current_b,grid.size); ///Get contiguous blocks to current block
         for (auto particle_current : grid[i_current_b]){ ///Go through each particle of the current block
             for (const auto& current_cont_block : contiguous_blocks){ ///Traverse the contiguous blocks
                 for (auto particle_cont_current : current_cont_block){ /// Go through each particle in the contiguous block
-                    if !(particle_current==(particle_cont_current)) { /// Check particle_i != particle_j
-                        if (distance_squared(particle_current, particle_cont_current) < (pow(initialValues.getH(), 2))) {
-                            grid[i_current_b] += pow(pow(initialValues.getH(), 2) - distance_squared(particle_current, particle_cont_current), 3);
+                    if (!(particle_current==particle_cont_current)) { /// Check particle_i != particle_j
+                        if (particle_current.distance_to(particle_cont_current) < (pow(initialValues.getH(), 2))) {
+                            particle_current.xet_grid[i_current_b] += pow(pow(initialValues.getH(), 2) - particle_current.distance_to(particle_cont_current), 3);
                         }
                     }
                 }
@@ -361,7 +361,7 @@ void acceleration_transfer(std::vector<Particle> &particles, Grid &grid, Initial
                 for (int loop_j = 0; loop_j < grid[c_block_index].size();loop_j++){ /// Go through each particle in the contiguous block
                     int particle_j_index = grid[c_block_index][loop_j];
                     Particle particle_j = particles[particle_j_index];
-                    if (particle_i_index != particle_j_index) { /// Check particle_i != particle_j
+                    if (particle_i_index == particle_j_index) { /// Check particle_i != particle_j
                         double dist_squared = distance_squared(particle_i, particle_j);
                         if (dist_squared < (pow(h, 2))) {
                             double distij = sqrt(std::max(dist_squared, pow(10,-12))); /// In these 4 lines calculate distij as stated in project and update accelerations
