@@ -363,8 +363,7 @@ void accelerations_computation(std::vector<Particle> &particles, Grid &grid){
 
 void simulate(int nsteps, std::vector<Particle> &particles, Grid &grid){
     for(int i=0;i < nsteps; i++) {
-        std::vector<double> densities;
-        std::vector<Acceleration> accelerations;
+        //std::vector<double> densities;
         //Stages of Simulation
         //Stage 2: Accelerations computation
         accelerations_computation(particles, grid, densities, accelerations);
@@ -373,6 +372,6 @@ void simulate(int nsteps, std::vector<Particle> &particles, Grid &grid){
         //stage 4: Particles motion
         particles_motion(particles, grid, accelerations);
         //Stage 5: Boundary collisions
-        boundary_collision(particles,grid);
+        boundary_collision(grid);
     }
 }

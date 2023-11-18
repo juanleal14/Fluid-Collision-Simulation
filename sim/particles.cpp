@@ -47,7 +47,7 @@ private:
 
 class Particle{
 public:
-    int id;
+        int id;
     Vect3<double> pos;
     Vect3<double> hv;
     Vect3<double> v;

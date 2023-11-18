@@ -4,7 +4,7 @@
 class Initial_Values {
 public:
     // Constructors
-    Initial_Values() : ppm(0.0f), np(0), m(0.0), h(0.0) {}
+    Initial_Values() : ppm(0.0), np(0), m(0.0), h(0.0) {}
 
     Initial_Values(float ppmValue, int npValue, double mValue, double hValue)
             : ppm(ppmValue), np(npValue), m(mValue), h(hValue) {}
