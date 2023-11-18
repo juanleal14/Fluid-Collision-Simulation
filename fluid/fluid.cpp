@@ -9,7 +9,7 @@ int main(int argc, char** argv) {
     std::span const args_view{argv, static_cast<std::size_t>(argc)};
     std::vector<std::string> const arguments{args_view.begin() + 1, args_view.end()};
     check_command_errors(argc,arguments);
-    Grid grid = initial_read(arguments[2],initialValues);
+
     //std::cout<<"\nNum particles: "<<grid.size.<<'\n';
     //Grid grid = grid_initialization(initialValues);
     simulate(1,grid);

@@ -300,7 +300,7 @@ void particles_motion(Grid &grid){
 void densities_increase(Grid &grid, Initial_Values initialValues){ /// Cambiar p por part, porque ya hay una varibale gloabl p
     std::vector<Block> contiguous_blocks;
     for (int i_current_b = 0; i_current_b < grid.blocks.size();i_current_b++){ ///Go through all blocks
-        contiguous_blocks = get_contiguous_blocks(i_current_b,grid.size); ///Get contiguous blocks to current block
+        contiguous_blocks = get_contiguous_blocks(i_current_b,grid); ///Get contiguous blocks to current block
         for (auto particle_current : grid[i_current_b]){ ///Go through each particle of the current block
             for (const auto& current_cont_block : contiguous_blocks){ ///Traverse the contiguous blocks
                 for (auto particle_cont_current : current_cont_block){ /// Go through each particle in the contiguous block
@@ -354,7 +354,7 @@ void densities_transform(Grid &grid,Initial_Values initialValues){
 void acceleration_transfer(Grid &grid, Initial_Values initialValues){
     std::vector<Block> contiguous_blocks;
     for (int i_current_b = 0; i_current_b < grid.blocks.size();i_current_b++){ ///Go through all blocks
-        contiguous_blocks = get_contiguous_blocks(i_current_b,grid.size); ///Get contiguous blocks to current block
+        contiguous_blocks = get_contiguous_blocks(i_current_b,grid); ///Get contiguous blocks to current block
         for (auto particle_current : grid[i_current_b]){ ///Go through each particle of the current block
             for (const auto& current_cont_block : contiguous_blocks){ ///Traverse the contiguous blocks
                 for (auto particle_cont_current : current_cont_block){ /// Go through each particle in the contiguous block
@@ -373,7 +373,7 @@ void acceleration_transfer(Grid &grid, Initial_Values initialValues){
     }
 }
 
-void accelerations_computation(Grid &grid){
+void accelerations_computation(Grid &grid, Initial_Values &initialValues){
     //initialization of densities and accelerations
     for (auto current_block: grid.blocks) {
         for (auto loop_i : current_block) {
@@ -386,14 +386,14 @@ void accelerations_computation(Grid &grid){
         }
     }
     //check_trace("../trz/small/densinc-base-1.trz",grid,particles,densities,accelerations);
-    densities_increase(grid);
+    densities_increase(grid,initialValues);
     //check_trace("./trz/small/densinc-base-1.trz",grid,particles,densities,accelerations);
     densities_transform(grid);
     acceleration_transfer(grid);
 
 }
 
-void simulate(int nsteps, Grid &grid){
+void simulate(int nsteps, Grid &grid, Initial_Values initialValues){
     for(int i=0;i < nsteps; i++) {
         //std::vector<double> densities;
         //Stages of Simulation
