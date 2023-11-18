@@ -166,7 +166,8 @@ void particle_collision_with_Z_axis(Grid &grid) {
             z_param = loop_j.pos.z() + loop_j.hv.z() * time_step;        //  z = pz + hvz · ∆t
             increment = part_size - (z_param - bmin_coord_z);                                //  part_size − (z − zmin)
             if (increment > distance_minimum) {                            //  az + (cs · ∆z − damping · vz)
-            loop_j.acceleration.set_z(loop_j.acceleration.z() + (stiff_collision * increment - damping * loop_j.v.z()));
+            //loop_j.acceleration.set_z(loop_j.acceleration.z() + (stiff_collision * increment - damping * loop_j.v.z()));
+                loop_j.acceleration[2] = loop_j.acceleration[2] + (stiff_collision * increment - damping * loop_j.v[2]);
             }
         }
     }

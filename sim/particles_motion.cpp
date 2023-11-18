@@ -160,11 +160,11 @@ void check_trace(std::string trz, Grid &grid){
             std::cout<<"Number of particles for block "<<" mismatch: "<<"grid["<<"].size() = "<<" particles in block = "<<particles_in_block<<'\n';
             exit(-1);
         }
-        for (auto current_particle : current_block){
+        for (int i = 0; i < current_block.size();i++){
             file.read(reinterpret_cast<char*>(&id), sizeof(long));//NOLINT
             //cout<<"Particle "<<id<<" in block["<<i<<"] : ";
 
-            Particle part_in_our_grid = find_elem(id,current_block);
+
             part.id = id;
 
             file.read(reinterpret_cast<char*>(&write_value), sizeof(double));//NOLINT
@@ -197,7 +197,7 @@ void check_trace(std::string trz, Grid &grid){
                 std::cout << "\nParticles " << current_particle.id << " and " << part.id << " are not the same." << "I am in block: " << counter<<"\n";
                 exit(-1);
             }*/
-            compare_particle(part_in_our_grid,current_particle);
+            compare_particle(part_in_our_grid,part);
         }
         counter +=1;
     }
