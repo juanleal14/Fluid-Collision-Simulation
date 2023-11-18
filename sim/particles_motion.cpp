@@ -8,39 +8,46 @@ void load_trace(std::string trz, Grid &grid_trz, Initial_Values &initialValues){
         std::cout<<"Error: Cannot open trace file: " << trz <<" for reading";
         exit (-1);
     }
-    int num_blocks;
+    int num_blocks = 0;
     file.read(reinterpret_cast<char*>(&num_blocks), sizeof(int));//NOLINT
-    std::vector<Block> blocks(num_blocks);
+    std::vector<Block> const blocks(num_blocks);
     long particles_in_block = 0;
     long part_id = 0;
-    std::cout<<"Grid.size = "<<grid.blocks.size()<<" total particles = "<<num_blocks<<'\n';
-    long value_long = 0;
+    std::cout<<"Grid.size = "<<grid_trz.blocks.size()<<" total particles = "<<num_blocks<<'\n';
     double value_double = 0;
+    Particle particle_p;
     for (int loop_i = 0; loop_i<num_blocks;loop_i++){
         file.read(reinterpret_cast<char*>(&particles_in_block), sizeof(long));//NOLINT
         for (int loop_p = 0; loop_p<particles_in_block;loop_p++){//NOLINT
             file.read(reinterpret_cast<char*>(&part_id), sizeof(long));//NOLINT
             grid.blocks[loop_i][loop_p].id(part_id);
             file.read(reinterpret_cast<char*>(&value_double), sizeof(double));//NOLINT
-            grid.blocks[loop_i][loop_p].pos.set_x(value_double);
-            file.read(reinterpret_cast<char*>(&value_double, sizeof(double));//NOLINT
-            grid.blocks[loop_i][loop_p].pos.set_y(value_double);
+            particle_p.pos.set_x(value_double);
             file.read(reinterpret_cast<char*>(&value_double), sizeof(double));//NOLINT
-            grid.blocks[loop_i][loop_p].pos.set_z(value_double);
-            file.read(reinterpret_cast<char*>(&value_double, sizeof(double));//NOLINT
-            grid.blocks[loop_i][loop_p].hv.set_x(value_double);
-            file.read(reinterpret_cast<char*>(&particles[part_id].hv().y()), sizeof(double));//NOLINT
-            file.read(reinterpret_cast<char*>(&particles[part_id].hv().z()), sizeof(double));//NOLINT
-            file.read(reinterpret_cast<char*>(&particles[part_id].v.x()), sizeof(double));//NOLINT
-            file.read(reinterpret_cast<char*>(&particles[part_id].v.y()), sizeof(double));//NOLINT
-            file.read(reinterpret_cast<char*>(&particles[part_id].v.z()), sizeof(double));//NOLINT
-            file.read(reinterpret_cast<char*>(&densities[part_id]), sizeof(double));//NOLINT
-            file.read(reinterpret_cast<char*>(&read_value), sizeof(double));//NOLINT
-            accelerations[part_id].set_acc_x(read_value);
-            file.read(reinterpret_cast<char*>(&read_value), sizeof(double));//NOLINT
-            accelerations[part_id].set_acc_y(read_value);
-            file.read(reinterpret_cast<char*>(&read_value), sizeof(double));//NOLINT
-            accelerations[part_id].set_acc_z(read_value);
+            particle_p.pos.set_y(value_double);
+            file.read(reinterpret_cast<char*>(&value_double), sizeof(double));//NOLINT
+            particle_p.pos.set_z(value_double);
+            file.read(reinterpret_cast<char*>(&value_double), sizeof(double));//NOLINT
+            particle_p.hv.set_x(value_double);
+            file.read(reinterpret_cast<char*>(&value_double), sizeof(double));//NOLINT
+            particle_p.hv.set_y(value_double);
+            file.read(reinterpret_cast<char*>(&value_double), sizeof(double));//NOLINT
+            particle_p.hv.set_z(value_double);
+            file.read(reinterpret_cast<char*>(&value_double), sizeof(double));//NOLINT
+            particle_p.v.set_x(value_double);
+            file.read(reinterpret_cast<char*>(&value_double), sizeof(double));//NOLINT
+            particle_p.v.set_y(value_double);
+            file.read(reinterpret_cast<char*>(&value_double), sizeof(double));//NOLINT
+            particle_p.v.set_z(value_double);
+            file.read(reinterpret_cast<char*>(&value_double), sizeof(double));//NOLINT
+            particle_p.density = value_double;
+            file.read(reinterpret_cast<char*>(&value_double), sizeof(double));//NOLINT
+            particle_p.acceleration.set_x(value_double);
+            file.read(reinterpret_cast<char*>(&value_double), sizeof(double));//NOLINT
+            particle_p.acceleration.set_y(value_double);
+            file.read(reinterpret_cast<char*>(&value_double), sizeof(double));//NOLINT
+            particle_p.acceleration.set_z(value_double);
+            grid_trz.blocks[loop_i].push_back(particle_p);
         }
     }
     std::cout<<"\nTrace loaded\n";
@@ -132,13 +139,13 @@ void check_trace(std::string trz, Grid &grid){
     double d;
     Vect3<double> a;
     double write_value;
-
+    int counter = 0;
     for (auto current_block: grid.blocks) {
         file.read(reinterpret_cast<char*>(&particles_in_block), sizeof(long));//NOLINT
         std::cout<<"Entering block: "<<counter<<" particles in block = "<<particles_in_block<<'\n';
 
         if(current_block.size()!=particles_in_block){
-            std::cout<<"Number of particles for block "<<" mismatch: "<<"grid["<<i<<"].size() = "<<grid[i].size()<<" particles in block = "<<particles_in_block<<'\n';
+            std::cout<<"Number of particles for block "<<" mismatch: "<<"grid["<<"].size() = "<<" particles in block = "<<particles_in_block<<'\n';
             exit(-1);
         }
         for (auto current_particle : current_block){
@@ -176,6 +183,7 @@ void check_trace(std::string trz, Grid &grid){
                 exit(-1);
             }
         }
+        counter +=1;
     }
 
 
