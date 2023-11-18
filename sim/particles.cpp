@@ -1,7 +1,7 @@
 #include "particles.hpp"
 
- template <typename T>
- class Vect3{
+template <typename T>
+class Vect3{
 public:
     // Constructor to initialize constant features
     Vect3(T xset, T yset, T zset) : coords({xset,yset,zset})  {}
