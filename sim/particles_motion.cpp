@@ -84,19 +84,19 @@ void compare_particle(Particle &p1, Particle &p2){
         if_found =1;
     }if (p1.pos.z() != p2.pos.z()){
         std::cout<<"id = "<<id<<" "<<"Particles z pos differ, p1.pos.z() = "<<p1.pos.z()<<" p2.pos.z() = "<<p2.pos.z()<<'\n';
-        //exit(-1);
+        if_found =1;
     }if (p1.hv.x() != p2.hv.x()){
         std::cout<<"id = "<<id<<" "<<"Particles hvx pos differ, p1.hv.x() = "<<p1.hv.x()<<" p2.hv.x() = "<<p2.hv.x()<<'\n';
-        //exit(-1);
+        if_found =1;
     }if (p1.hv.y() != p2.hv.y()){
         std::cout<<"id = "<<id<<" "<<"Particles hvy pos differ, p1.hv.y() = "<<p1.hv.y()<<" p2.hv.y() = "<<p2.hv.y()<<'\n';
-        //exit(-1);
+        if_found =1;
     }if (p1.hv.z() != p2.hv.z()){
         std::cout<<"id = "<<id<<" "<<"Particles hvz pos differ, p1.hv.z() = "<<p1.hv.z()<<" p2.hv.z() = "<<p2.hv.z()<<'\n';
-        //exit(-1);
+        if_found =1;
     }if (p1.v.x() != p2.v.x()){
         std::cout<<"id = "<<id<<" "<<"Particles vx pos differ, p1.v.x() = "<<p1.v.x()<<" p2.v.x() = "<<p2.v.x()<<'\n';
-        //exit(-1);
+        if_found =1;
     }if (p1.v.y() != p2.v.y()) {
         std::cout << "id = " << id << " " << "Particles vy pos differ, p1.v.y() = " << p1.v.y() << " p2.v.y() = "<< p2.v.y() << '\n';
         if_found =1;
@@ -142,7 +142,7 @@ void check_trace(std::string trz, Grid &grid){
     if (num_blocks != grid.blocks.size()){
         std::cout<<"Number of blocks differ from trace:\n"<<"trz_blocks = "<<num_blocks<<'\t'<<"grid_blocks = "<<grid.blocks.size()<<'\n';
         //cout<<"Pruebita"<<(grid.size.nx-1)*(grid.size.ny-1)*(grid.size.nz-1)<<'\n';
-        exit(-1);
+        //exit(-1);
     }
 
     long particles_in_block;
