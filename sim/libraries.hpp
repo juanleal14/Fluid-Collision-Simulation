@@ -11,7 +11,7 @@
 #include <array>
 #include <numbers>
 #include <span>
-#
+#include <algorithm>
 
 constexpr double bmax_coord_x = 0.065;
 constexpr double bmax_coord_y = 0.1;
