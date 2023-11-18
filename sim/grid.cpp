@@ -113,34 +113,6 @@ int find_block(Particle particle,GridSize gridSize){
 }
 
 
-Grid grid_initialization(Initial_Values &initialValues,Block &particles){
-    //Bmax bmax();
-    const double boxx = bmax_coord_x - bmin_coord_x;
-    const double boxy = bmax_coord_y - bmin_coord_y;
-    const double boxz = bmax_coord_z - bmin_coord_z;
-    const double boxz = bmax_coord_z - bmin_coord_z;
-    GridSize gridSize;
-    gridSize.setNumX(floor(boxx/initialValues.getH()));
-    gridSize.setNumY(floor(boxy/initialValues.getH()));
-    gridSize.setNumZ(floor(boxz/initialValues.getH()));
-    gridSize.setSizeX(boxx/gridSize.getNumX());
-    gridSize.setSizeY(boxy/gridSize.getNumY());
-    gridSize.setSizeZ(boxz/gridSize.getNumZ());
-
-    const std::vector<Block> blocks = gridCreation(gridSize);
-    Grid grid;
-    grid.size = gridSize;
-    grid.blocks = blocks(grid.size.getNumX(), std::vector<int>(grid.size.getNumY(), 0);
-
-    Grid grid(gridSize);
-    std::cout<<"After : "<<grid.blocks.size()<<'\n';
-    for (int i = 0; i < particles.size(); i++){
-        grid.add_particle(particles[i]);
-    }
-    return grid;
-}
-
-
 void particle_collision_with_Z_axis(Grid &grid) {
 
     double z_param = 0;

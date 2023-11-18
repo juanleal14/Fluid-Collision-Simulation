@@ -379,6 +379,7 @@ void accelerations_computation(Grid &grid, Initial_Values &initialValues){
         for (auto loop_i : current_block) {
         //for (int loop_i = 0; loop_i < current_block.size(); loop_i++) {
             loop_i.density = 0;
+            loop_i.acceleration = Vect3<double>(0,-gravity,0);
             loop_i.acceleration.set_x(0);
             loop_i.acceleration.set_y(-gravity);
             loop_i.acceleration.set_z(0);

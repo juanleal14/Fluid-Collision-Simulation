@@ -21,9 +21,6 @@ class vect3;
 std::vector<Block> get_contiguous_blocks(int current_block, GridSize gsize);
 Grid gridCreation(GridSize gridSize);
 int find_block(Particle particle,GridSize gridSize);
-Grid grid_initialization(Initial_Values &initialValues,std::vector<Particle> &particles);
-Grid initialize_grid(std::ifstream &file,Initial_Values &initialValues);
-Grid initial_read(const std::string& file_address,Initial_Values &initialValues);
 
 void particle_collision_with_X_axis(Grid &grid);
 void particle_collision_with_Y_axis(Grid &grid);

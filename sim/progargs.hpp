@@ -24,3 +24,5 @@ class Initial_Values;
 void check_command_errors(int argc,std::vector<std::string> arguments);
 Initial_Values read_general_info(std::ifstream &file);
 Particle read_particle(std::ifstream & file);
+Grid initialize_grid(std::ifstream &file,Initial_Values &initialValues,int &counter);
+Grid initial_read(const std::string& file_address,Initial_Values &initialValues);

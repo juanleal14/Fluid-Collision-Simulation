@@ -1,4 +1,5 @@
 #include "sim/particles_motion.cpp"
+#include "sim/progargs.cpp"
 //using namespace std;
 
 
@@ -9,9 +10,8 @@ int main(int argc, char** argv) {
     std::span const args_view{argv, static_cast<std::size_t>(argc)};
     std::vector<std::string> const arguments{args_view.begin() + 1, args_view.end()};
     check_command_errors(argc,arguments);
-
     //std::cout<<"\nNum particles: "<<grid.size.<<'\n';
-    Grid grid = grid_initialization(arguments[2],initialValues);
+    Grid grid = initial_read(arguments[2],initialValues);
     simulate(1,grid,initialValues);
     write_to_file(arguments[3],grid,initialValues);
 

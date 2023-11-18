@@ -15,22 +15,22 @@ public:
     void set(T x, T y, T z) { coords[0] = x; coords[1] = y; coords[2] = z; }
     T& operator[](int i){return coords[i];}
 
-     Vect3 operator+ (Vect3<T>& other) {
-         Vect3 result(coords[0]+other[0],coords[1]+other[1],coords[2]+other[2]);
+     Vect3<T> operator+ (Vect3<T>& other) {
+         Vect3<T> result(coords[0]+other[0],coords[1]+other[1],coords[2]+other[2]);
          return result;
      }
 
-    Vect3 operator- (Vect3<T>& other) {
-        Vect3 result(coords[0] - other[0], coords[1] - other[1], coords[2] - other[2]);
+    Vect3<T> operator- (Vect3<T>& other) {///Arreglar estooOo
+        Vect3<T> result(coords[0] - other[0], coords[1] - other[1], coords[2] - other[2]);
         return result;
     }
 
-    Vect3 operator* (const double &c) const{
-        Vect3 const result(coords[0]*c,coords[1]*c,coords[2]*c);
+    Vect3<T> operator* (const double &c) const{
+        Vect3<T> result(coords[0]*c,coords[1]*c,coords[2]*c);
         return result;
     }
 
-    Vect3 operator= (Vect3<T> &other){ ///Operator =
+    Vect3<T>& operator= (Vect3<T> const &other){ ///Operator =
         std::copy(coords.begin(),coords.end(),&other[0]);
         return *this;
     }
