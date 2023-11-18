@@ -297,7 +297,7 @@ void particles_motion(Grid &grid){
     }
     }
 }*/
-void densities_increase(Grid &grid, Initial_Values initialValues){ /// Cambiar p por part, porque ya hay una varibale gloabl p
+void densities_increase(Grid &grid, Initial_Values &initialValues){ /// Cambiar p por part, porque ya hay una varibale gloabl p
     std::vector<Block> contiguous_blocks;
     for (int i_current_b = 0; i_current_b < grid.blocks.size();i_current_b++){ ///Go through all blocks
         contiguous_blocks = get_contiguous_blocks(i_current_b,grid); ///Get contiguous blocks to current block
@@ -343,7 +343,7 @@ void densities_increase(std::vector<Particle> &particles, Grid &grid, std::vecto
 }
 
 */
-void densities_transform(Grid &grid,Initial_Values initialValues){
+void densities_transform(Grid &grid,Initial_Values &initialValues){
     for (const auto& current_block: grid.blocks){
         for (auto particle : current_block){
             particle.density = (particle.density + pow(initialValues.getH(),6))* (315*initialValues.getM())/(64*std::numbers::pi* pow(initialValues.getH(),9));
@@ -351,7 +351,7 @@ void densities_transform(Grid &grid,Initial_Values initialValues){
     }
 }
 
-void acceleration_transfer(Grid &grid, Initial_Values initialValues){
+void acceleration_transfer(Grid &grid, Initial_Values &initialValues){
     std::vector<Block> contiguous_blocks;
     for (int i_current_b = 0; i_current_b < grid.blocks.size();i_current_b++){ ///Go through all blocks
         contiguous_blocks = get_contiguous_blocks(i_current_b,grid); ///Get contiguous blocks to current block
@@ -388,8 +388,8 @@ void accelerations_computation(Grid &grid, Initial_Values &initialValues){
     //check_trace("../trz/small/densinc-base-1.trz",grid,particles,densities,accelerations);
     densities_increase(grid,initialValues);
     //check_trace("./trz/small/densinc-base-1.trz",grid,particles,densities,accelerations);
-    densities_transform(grid);
-    acceleration_transfer(grid);
+    densities_transform(grid,initialValues);
+    acceleration_transfer(grid,initialValues);
 
 }
 
@@ -398,7 +398,7 @@ void simulate(int nsteps, Grid &grid, Initial_Values initialValues){
         //std::vector<double> densities;
         //Stages of Simulation
         //Stage 2: Accelerations computation
-        accelerations_computation(grid);
+        accelerations_computation(grid,initialValues);
         //Stage 3: Particle Collisions
         particle_collision(grid);
         //stage 4: Particles motion

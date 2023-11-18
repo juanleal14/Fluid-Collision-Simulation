@@ -11,8 +11,8 @@ int main(int argc, char** argv) {
     check_command_errors(argc,arguments);
 
     //std::cout<<"\nNum particles: "<<grid.size.<<'\n';
-    //Grid grid = grid_initialization(initialValues);
-    simulate(1,grid);
+    Grid grid = grid_initialization(arguments[2],initialValues);
+    simulate(1,grid,initialValues);
     write_to_file(arguments[3],grid,initialValues);
 
 // TRAZE  BOUNDARY ITERATION
