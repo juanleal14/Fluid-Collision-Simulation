@@ -1,7 +1,6 @@
 #include "particles_motion.hpp"
 
 
-
 void load_trace(std::string trz, Grid &grid_trz, Initial_Values &initialValues){
     std::ifstream file(trz, std::ios::binary);
     if (!file.is_open()) { //Check error opening
@@ -20,7 +19,8 @@ void load_trace(std::string trz, Grid &grid_trz, Initial_Values &initialValues){
         file.read(reinterpret_cast<char*>(&particles_in_block), sizeof(long));//NOLINT
         for (int loop_p = 0; loop_p<particles_in_block;loop_p++){//NOLINT
             file.read(reinterpret_cast<char*>(&part_id), sizeof(long));//NOLINT
-            grid.blocks[loop_i][loop_p].id(part_id);
+            int const part_id_int = static_cast<int>(part_id);
+            particle_p.id = part_id_int;
             file.read(reinterpret_cast<char*>(&value_double), sizeof(double));//NOLINT
             particle_p.pos.set_x(value_double);
             file.read(reinterpret_cast<char*>(&value_double), sizeof(double));//NOLINT
@@ -106,8 +106,8 @@ void compare_particle(Particle &p1, Particle &p2,long id){
 void find_elem(long id, Block &block){
     ///Only works if both vectors have same size
     int found = 0;
-    for (auto i : block){
-        if(id == i.id){
+    for (auto loop_i : block){
+        if(id == loop_i.id){
             found = 1;
         }
     }
@@ -137,7 +137,7 @@ void check_trace(std::string trz, Grid &grid){
     long id;
     Particle part;
     double d;
-    Vect3<double> a;
+    Vect3<double> a(0,0,0); //Por qué da error?
     double write_value;
     int counter = 0;
     for (auto current_block: grid.blocks) {
@@ -152,30 +152,31 @@ void check_trace(std::string trz, Grid &grid){
             file.read(reinterpret_cast<char*>(&id), sizeof(long));//NOLINT
             //cout<<"Particle "<<id<<" in block["<<i<<"] : ";
             find_elem(id,current_block);
+            part.id = id;
             file.read(reinterpret_cast<char*>(&write_value), sizeof(double));//NOLINT
-            current_particle.pos.set_x(write_value);
+            part.pos.set_x(write_value);
             file.read(reinterpret_cast<char*>(&write_value), sizeof(double));//NOLINT
-            current_particle.pos.set_y(write_value);
+            part.pos.set_y(write_value);
             file.read(reinterpret_cast<char*>(&write_value),sizeof(double));//NOLINT
-            current_particle.pos.set_z(write_value);
+            part.pos.set_z(write_value);
             file.read(reinterpret_cast<char*>(&write_value), sizeof(double));//NOLINT
-            current_particle.hv.set_x(write_value);
+            part.hv.set_x(write_value);
             file.read(reinterpret_cast<char*>(&write_value), sizeof(double));//NOLINT
-            current_particle.hv.set_y(write_value);
+            part.hv.set_y(write_value);
             file.read(reinterpret_cast<char*>(&write_value), sizeof(double));//NOLINT
-            current_particle.hv.set_z(write_value);
+            part.hv.set_z(write_value);
             file.read(reinterpret_cast<char*>(&write_value), sizeof(double));//NOLINT
-            current_particle.v.set_x(write_value);
+            part.v.set_x(write_value);
             file.read(reinterpret_cast<char*>(&write_value), sizeof(double));//NOLINT
-            current_particle.v.set_y(write_value);
+            part.v.set_y(write_value);
             file.read(reinterpret_cast<char*>(&write_value), sizeof(double));//NOLINT
-            current_particle.v.set_z(write_value);
+            part.v.set_z(write_value);
             file.read(reinterpret_cast<char*>(&write_value), sizeof(double));//NOLINT
-            current_particle.density = write_value;
+            part.density = write_value;
             file.read(reinterpret_cast<char*>(&write_value), sizeof(double));//NOLINT
-            current_particle.acceleration.set_x(write_value);
+            part.acceleration.set_x(write_value);
             file.read(reinterpret_cast<char*>(&write_value), sizeof(double));//NOLINT
-            current_particle.acceleration.set_y(write_value);
+            part.acceleration.set_y(write_value);
             file.read(reinterpret_cast<char*>(&write_value), sizeof(double));//NOLINT
             part.acceleration.set_z(write_value);
             if((current_particle != part)){
@@ -185,10 +186,7 @@ void check_trace(std::string trz, Grid &grid){
         }
         counter +=1;
     }
-
-
     std::cout<<"\nTrace is equal to current state of the simulation\n";
-
     file.close();
 }
 
@@ -250,19 +248,10 @@ void particles_motion(Grid &grid) {
             double move_z = particle.hv.z() * time_step +
                             particle.acceleration.z() * pow(time_step, 2);
             //optimization
-            int old_block = find_block(particle, grid.size);
-            for (auto blocks: grid.blocks) {
-                particle.pos.set(particle.pos.x()+move_x,particle.pos.y()+move_y,particle.pos.z()+move_z);
-                particle.v.set(particle.hv.x() + (particle.acceleration.x() * time_step)*.5,particle.hv.y() + (particle.acceleration.y() * time_step)*.5,particle.hv.z() + (particle.acceleration.z() * time_step)*.5);
-                particle.hv.set(particle.hv.x() + particle.acceleration.x() * time_step,particle.hv.y() + particle.acceleration.y() * time_step,particle.hv.z() + particle.acceleration.z() * time_step);
-                /*int new_block = find_block(particle, grid.size);
-                if (old_block != new_block) {
-                   grid[[new_block].push_back(particle);
-                    Particle part_x = grid[old_block].begin();
-                    while (part_x != particle) { part_x++; }
-                    grid[old_block].erase(part_x);
-                }*/
-            }
+            particle.pos.set(particle.pos.x()+move_x,particle.pos.y()+move_y,particle.pos.z()+move_z);
+            particle.v.set(particle.hv.x() + (particle.acceleration.x() * time_step)*.5,particle.hv.y() + (particle.acceleration.y() * time_step)*.5,particle.hv.z() + (particle.acceleration.z() * time_step)*.5);
+            particle.hv.set(particle.hv.x() + particle.acceleration.x() * time_step,particle.hv.y() + particle.acceleration.y() * time_step,particle.hv.z() + particle.acceleration.z() * time_step);
+
         }
     }
 }

@@ -241,7 +241,9 @@ void Z_boundary_interaction(Grid &grid) {
             }
         }
     }
-    for (int loop_i = (grid.size.getNumZ()*grid.size.getNumY()*grid.size.getNumX() - grid.size.getNumX()*grid.size.getNumY())-1; loop_i < grid.size.getNumZ()*grid.size.getNumY()*grid.size.getNumX(); loop_i++){    //pared x_max
+    for (int loop_i = (grid.size.getNumZ()*grid.size.getNumY()*grid.size.getNumX() -
+            grid.size.getNumX()*grid.size.getNumY())-1; loop_i < grid.size.getNumZ()*
+            grid.size.getNumY()*grid.size.getNumX(); loop_i++){    //pared x_max
         for (auto loop_j : grid.blocks[loop_i]) {
             distance_z = bmax_coord_z - loop_j.pos.z();
             if (distance_z < 0) {
