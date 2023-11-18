@@ -38,7 +38,7 @@ void check_command_errors(int argc,std::vector<std::string> arguments) {
     //Is integer
     try {
         // Convert the input parameter to an integer
-        int const value = std::stoi(arguments[1]);
+        int const value = std::stoi(arguments[0]);
         // Use the integer value as needed
         std::cout << "The entered integer is: " << value << "\n";
         if (value < 0) {

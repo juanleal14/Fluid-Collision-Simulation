@@ -2,7 +2,7 @@
 
 
 
-/*void load_trace(std::string trz, Grid &grid, std::vector<Particle> &particles, Initial_Values &i_v){
+void load_trace(std::string trz, Grid &grid, Initial_Values &initialValues){
     std::ifstream file(trz, std::ios::binary);
     if (!file.is_open()) { //Check error opening
         std::cout<<"Error: Cannot open trace file: " << trz <<" for reading";
@@ -13,16 +13,22 @@
     std::vector<Block> blocks(num_blocks);
     long particles_in_block = 0;
     long part_id = 0;
-    std::cout<<"Grid.size = "<<grid.blocks.size()<<" total particles = "<<particles.size()<<'\n';
+    std::cout<<"Grid.size = "<<grid.blocks.size()<<" total particles = "<<num_blocks<<'\n';
+    long value_long = 0;
+    double value_double = 0;
     for (int loop_i = 0; loop_i<num_blocks;loop_i++){
         file.read(reinterpret_cast<char*>(&particles_in_block), sizeof(long));//NOLINT
         for (int loop_p = 0; loop_p<particles_in_block;loop_p++){//NOLINT
             file.read(reinterpret_cast<char*>(&part_id), sizeof(long));//NOLINT
-            grid[loop_i].push_back(part_id);
-            file.read(reinterpret_cast<char*>(&particles[part_id].pos().x()), sizeof(double));//NOLINT
-            file.read(reinterpret_cast<char*>(&particles[part_id].pos().y()), sizeof(double));//NOLINT
-            file.read(reinterpret_cast<char*>(&particles[part_id].pos().z()), sizeof(double));//NOLINT
-            file.read(reinterpret_cast<char*>(&particles[part_id].hv().x()), sizeof(double));//NOLINT
+            grid.blocks[loop_i][loop_p].id(part_id);
+            file.read(reinterpret_cast<char*>(&value_double), sizeof(double));//NOLINT
+            grid.blocks[loop_i][loop_p].pos.set_x(value_double);
+            file.read(reinterpret_cast<char*>(&value_double, sizeof(double));//NOLINT
+            grid.blocks[loop_i][loop_p].pos.set_y(value_double);
+            file.read(reinterpret_cast<char*>(&value_double, sizeof(double));//NOLINT
+            grid.blocks[loop_i][loop_p].pos.set_z(value_double);
+            file.read(reinterpret_cast<char*>(&value_double), sizeof(double));//NOLINT
+            grid.blocks[loop_i][loop_p].hv.set_x(value_double);
             file.read(reinterpret_cast<char*>(&particles[part_id].hv().y()), sizeof(double));//NOLINT
             file.read(reinterpret_cast<char*>(&particles[part_id].hv().z()), sizeof(double));//NOLINT
             file.read(reinterpret_cast<char*>(&particles[part_id].v.x()), sizeof(double));//NOLINT
@@ -38,10 +44,10 @@
         }
     }
     std::cout<<"\nTrace loaded\n";
-}*/
+}
 
 
-/*void compare_accelerations(Particle &p1, Particle &p2, long id){
+void compare_accelerations(Particle &p1, Particle &p2, long id){
     if (p1.acceleration.x()!=p2.acceleration.x()){
         std::cout<<"id = "<<id<<" "<<"Accelerations x() differ, a1.x() = "<<p1.acceleration.x()<<" a2.x() = "<<p2.acceleration.x()<<'\n';
         //exit(-1);
@@ -54,9 +60,9 @@
         std::cout<<"id = "<<id<<" "<<"Accelerations az differ, a1.az = "<<p1.acceleration.z()<<" a2.az = "<<p2.acceleration.z()<<'\n';
         //exit(-1);
     }
-}*/
+}
 
-/*void compare_particle(Particle &p1, Particle &p2,long id){
+void compare_particle(Particle &p1, Particle &p2,long id){
     if (p1.pos.x() != p2.pos.x()){
         std::cout<<"id = "<<id<<" "<<"Particles x pos differ, p1.pos.x() = "<<p1.pos.x()<<" p2.pos.x() = "<<p2.pos.x()<<'\n';
         //exit(-1);
@@ -88,9 +94,9 @@
                   << p2.v.z() << '\n';
         //exit(-1);
     }
-}*/
+}
 
-/*void find_elem(long id, Block &block){
+void find_elem(long id, Block &block){
     ///Only works if both vectors have same size
     int found = 0;
     for (auto i : block){
@@ -206,9 +212,8 @@ void write_to_file(const std::string& output_file_address,Grid grid, Initial_Val
     output_file.write(reinterpret_cast<char*>(&read_value2), sizeof(int));//NOLINT
     std::cout<<"\n"<<initialValues.getPpm()<<"HOLA"<<initialValues.getNp()<<"\n";
     //create a loop to write all the particles
-
     for (auto current_block : grid.blocks){
-        for (int loop_i = 0; loop_i <= current_block.size(); loop_i++) {//NOLINT
+        for (int loop_i = 0; loop_i < current_block.size(); loop_i++) {//NOLINT
             part_coord_x = static_cast<float>(current_block[loop_i].pos.x());
             part_coord_y = static_cast<float>(current_block[loop_i].pos.y());
             part_coord_z = static_cast<float>(current_block[loop_i].pos.z());
@@ -228,7 +233,7 @@ void write_to_file(const std::string& output_file_address,Grid grid, Initial_Val
             output_file.write(reinterpret_cast<const char *>(&part_vel_y), sizeof(float));//NOLINT
             output_file.write(reinterpret_cast<const char *>(&part_vel_z), sizeof(float));//NOLINT
             //output_file.write("\n", sizeof(char ));
-            std::cout << "\n" <<current_block[loop_i].pos.x() << "\n";
+
         }
     }
     output_file.close();
