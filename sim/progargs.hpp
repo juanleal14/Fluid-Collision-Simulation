@@ -3,7 +3,7 @@
 
 #endif //FLUID_OPTIMIZATION_PROGARGS_H
 #include "libraries.h"
-#include "particles.cpp"
+#include "grid.hpp"
 
 constexpr double const_r = 1.695;
 constexpr double global_density = 1000;
@@ -24,5 +24,6 @@ constexpr double gravity = 9.8;
 class Initial_Values;
 void check_command_errors(int argc,char** argv);
 Initial_Values read_general_info(std::ifstream &file);
-int read_particle_info(std::ifstream &file,std::vector<Particle> &particles);
-std::vector<Particle> initial_read(const std::string& file_address,Initial_Values &initialValues);
+Particle read_particle(std::ifstream & file);
+Grid initialize_grid(std::ifstream &file,Initial_Values &initialValues);
+Grid initial_read(const std::string& file_address,Initial_Values &initialValues);

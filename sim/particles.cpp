@@ -5,44 +5,40 @@
  {
 public:
     // Constructor to initialize constant features
-    Vect3(T xset, T yset, T zset) : xcoord(xset),ycoord(yset), zcoord(zset)  {}
+    Vect3(T xset, T yset, T zset) : coords({xset,yset,zset})  {}
     // Getter methods to access individual features
-    [[nodiscard]] T x() const { return xcoord; }
-    [[nodiscard]] T y() const { return ycoord; }
-    [[nodiscard]] T z() const { return zcoord; }
-    void set_x(T x)  { xcoord = x; }
-    void set_y(T y)  { ycoord = y; }
-    void set_z(T z)  { zcoord = z; }
+    [[nodiscard]] T x() const { return coords[0]; }
+    [[nodiscard]] T y() const { return coords[1]; }
+    [[nodiscard]] T z() const { return coords[2]; }
+    void set_x(T x)  { coords[0] = x; }
+    void set_y(T y)  { coords[1] = y; }
+    void set_z(T z)  { coords[2] = z; }
 
-    Vect3 operator- (const Vect3 &other) const{
-        Vect3 const result(xcoord-other.x(),ycoord-other.y(),zcoord-other.z());
+    T& operator[](int i){return coords[i];}
+    Vect3 operator- (Vect3<T>& other) {
+        Vect3 result(coords[0]-other[0],coords[1]-other[1],coords[2]-other[2]);
         return result;
     }
 
     Vect3 operator* (const double &c) const{
-        Vect3 const result(xcoord*c,ycoord*c,zcoord*c);
+        Vect3 const result(coords[0]*c,coords[1]*c,coords[2]*c);
         return result;
     }
 
-    Vect3& operator= (Vect3 const &other){
-        xcoord = other.x();
-        ycoord = other.y();
-        zcoord = other.z();
-
+    Vect3 operator= (Vect3<T> &other){ ///Operator =
+        std::copy(coords.begin(),coords.end(),&other[0]);
         return *this;
     }
 
     double dist_sqrd(Vect3& other){
-        Vect3 diff = *this - other;
+        const Vect3<T> diff = *this - other;
         return pow(diff.x(),2) + pow(diff.y(),2) + pow(diff.z(),2);
 
     }
 
 
 private:
-    double xcoord{};
-    double ycoord{};
-    double zcoord{};
+    std::array<T,3> coords; ///Checkear si se aloca junto a otros parametros de la clase o separado
 };
 
 
@@ -55,7 +51,7 @@ public:
     double density;
     Vect3<double> acceleration;
 
-public:
+
     Particle() : id(0), pos(0.0, 0.0, 0.0), hv(0.0, 0.0, 0.0), v(0.0, 0.0, 0.0), density(0.0), acceleration(0.0, 0.0, 0.0) {};
     Particle(int id_val, Vect3<double> pos, Vect3<double> hvs, Vect3<double> vel, double d, Vect3<double> a): id(id_val), pos(pos), hv(hvs), v(vel), density(d), acceleration(a){}
     double distance_to(Particle& p2){return pos.dist_sqrd(p2.pos);}

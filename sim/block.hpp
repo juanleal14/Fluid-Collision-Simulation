@@ -4,7 +4,7 @@
 #endif //FLUID_OPTIMIZATION_BLOCK_H
 
 #include "libraries.h"
-#include "progargs.cpp"
+#include "particles.hpp"
 typedef std::vector<Particle> Block;
 
 

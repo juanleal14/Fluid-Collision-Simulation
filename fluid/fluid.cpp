@@ -9,8 +9,8 @@ int main(int argc, char** argv) {
     const std::string text = argv[2];
     std::vector<Particle> myparticles = initial_read(argv[2],initialValues);
     std::cout<<"\nNum particles: "<<myparticles.size()<<'\n';
-    h = initialValues.getH();
-    m = initialValues.getM();
+    //h = initialValues.getH();
+    //m = initialValues.getM();
     Grid grid = grid_initialization(initialValues,myparticles);
     simulate(1,myparticles,grid);
     //write_to_file(argv[3],myparticles,initialValues);

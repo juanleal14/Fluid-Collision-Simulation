@@ -1,5 +1,5 @@
 #include "particles_motion.hpp"
-#include <numbers>
+
 
 
 void load_trace(std::string trz, Grid &grid, std::vector<Particle> &particles, std::vector<double> &densities, std::vector<Acceleration> &accelerations, Initial_Values &i_v){
@@ -182,6 +182,7 @@ void check_trace(std::string trz, Grid &grid, std::vector<Particle> &particles, 
     file.close();
 }
 
+/*
 std::vector <Particle> receive_trace(std::string trz, std::vector<double> &densities, std::vector<Acceleration> &accelerations) {
     std::ifstream file(trz, std::ios::binary);
     if (!file.is_open()) { //Check error opening
@@ -225,7 +226,7 @@ std::vector <Particle> receive_trace(std::string trz, std::vector<double> &densi
     }
     return particles;
 }
-
+*/
 void write_to_file(const std::string& output_file_address,std::vector<Particle> particles, Initial_Values &initialValues){
     //Write to the file all the new values
     std::ofstream output_file(output_file_address, std::ios::binary);

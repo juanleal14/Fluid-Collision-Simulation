@@ -4,8 +4,8 @@
 #endif //FLUID_OPTIMIZATION_GRID_H
 
 #include "libraries.h"
-#include "block.cpp"
-
+#include "block.hpp"
+#include "grid.cpp"
 
 //std::vector<double> bmax = {0.065, 0.1, 0.065};
 constexpr double bmax_coord_x = 0.065;
@@ -26,7 +26,6 @@ const double distance_minimum = pow(10, -10);
 class vect3;
 class GridSize;
 class Grid;
-class Initial_Values;
 
 std::vector<Block> get_contiguous_blocks(int current_block, GridSize gsize);
 Grid gridCreation(GridSize gridSize);

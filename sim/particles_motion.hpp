@@ -1,5 +1,5 @@
 #include "libraries.h"
-#include "grid.cpp"
+#include "grid.hpp"
 
 
 void compare_accelerations(Vect3 &a1, Vect3 &a2, long id);

@@ -1,5 +1,6 @@
 #include "progargs.hpp"
 
+
 class Initial_Values {
 public:
     // Constructors
@@ -64,53 +65,109 @@ Initial_Values read_general_info(std::ifstream &file){
     std::cout << "ppm: " << initialValues.getPpm() << ", np: " << initialValues.getNp() << std::endl;
     return initialValues;
 }
-int read_particle_info(std::ifstream &file,std::vector<Particle> &particles){
-    int counter = 0;
+/*
+Grid grid_initialization(Initial_Values &initialValues){
+    //Bmax bmax();
+    const double boxx = bmax_coord_x - bmin_coord_x;
+    const double boxy = bmax_coord_y - bmin_coord_y;
+    const double boxz = bmax_coord_z - bmin_coord_z;
+    GridSize gridSize;
+    gridSize.setNumX(floor(boxx/initialValues.getH()));
+    gridSize.setNumY(floor(boxy/initialValues.getH()));
+    gridSize.setNumZ(floor(boxz/initialValues.getH()));
+    gridSize.setSizeX(boxx/gridSize.getNumX());
+    gridSize.setSizeY(boxy/gridSize.getNumY());
+    gridSize.setSizeZ(boxz/gridSize.getNumZ());
+    /*
+    const std::vector<Block> blocks = gridCreation(gridSize);
+    Grid grid;
+    grid.size = gridSize;
+    grid.blocks = blocks(grid.size.getNumX(), std::vector<int>(grid.size.getNumY(), 0);
+
+    Grid grid(gridSize);
+
+    std::cout<<"After : "<<grid.blocks.size()<<'\n';
+    for (int i = 0; i < particles.size(); i++){
+        grid.add_particle(particles[i]);
+    }
+
+    return grid;
+}*/
+
+Particle read_particle(std::ifstream & file){ ///Read only one particle from file
+    float value = 0;
+    Particle particle;
+
+    file.read(reinterpret_cast<char*>(&value), sizeof(float));//NOLINT
+    particle.pos.set_x(static_cast<double>(value));
+    file.read(reinterpret_cast<char*>(&value), sizeof(float));//NOLINT
+    particle.pos.set_y(static_cast<double>(value));
+    file.read(reinterpret_cast<char*>(&value), sizeof(float));//NOLINT
+    particle.pos.set_z(static_cast<double>(value));
+    file.read(reinterpret_cast<char*>(&value), sizeof(float));//NOLINT
+    particle.hv.set_x(static_cast<double>(value));
+    file.read(reinterpret_cast<char*>(&value), sizeof(float));//NOLINT
+    particle.hv.set_y(static_cast<double>(value));
+    file.read(reinterpret_cast<char*>(&value), sizeof(float));//NOLINT
+    particle.hv.set_z(static_cast<double>(value));
+    file.read(reinterpret_cast<char*>(&value), sizeof(float));//NOLINT
+    particle.v.set_x(static_cast<double>(value));
+    file.read(reinterpret_cast<char*>(&value), sizeof(float));//NOLINT
+    particle.v.set_y(static_cast<double>(value));
+    file.read(reinterpret_cast<char*>(&value), sizeof(float));//NOLINT
+    particle.v.set_z(static_cast<double>(value));
+
+    return particle;
+}
+
+Grid initialize_grid(std::ifstream &file,Initial_Values &initialValues,int &counter){ /// Crear Grid con el size correcto y añadir todas las partículas del archivo
     //file.read(reinterpret_cast<char*)
+    /*
     float part_coord_x = 0;
     float part_coord_y = 0;
     float part_coord_z = 0;
+
     float part_vel_x = 0;
     float part_vel_y = 0;
     float part_vel_z = 0;
+
     float hvx = 0;
     float hvy = 0;
     float hvz = 0;
+    */
+
+    const double boxx = bmax_coord_x - bmin_coord_x;
+    const double boxy = bmax_coord_y - bmin_coord_y;
+    const double boxz = bmax_coord_z - bmin_coord_z;
+    GridSize gridSize;
+    gridSize.setNumX(floor(boxx/initialValues.getH()));
+    gridSize.setNumY(floor(boxy/initialValues.getH()));
+    gridSize.setNumZ(floor(boxz/initialValues.getH()));
+    gridSize.setSizeX(boxx/gridSize.getNumX());
+    gridSize.setSizeY(boxy/gridSize.getNumY());
+    gridSize.setSizeZ(boxz/gridSize.getNumZ());
+    Grid grid(gridSize);
+
     while(file.peek()!=EOF){
         counter ++;
-        Particle particle;
-        file.read(reinterpret_cast<char*>(&part_coord_x), sizeof(float));//NOLINT
-        file.read(reinterpret_cast<char*>(&part_coord_y), sizeof(float));//NOLINT
-        file.read(reinterpret_cast<char*>(&part_coord_z), sizeof(float));//NOLINT
-        file.read(reinterpret_cast<char*>(&hvx), sizeof(float));//NOLINT
-        file.read(reinterpret_cast<char*>(&hvy), sizeof(float));//NOLINT
-        file.read(reinterpret_cast<char*>(&hvz), sizeof(float));//NOLINT
-        file.read(reinterpret_cast<char*>(&part_vel_x), sizeof(float));//NOLINT
-        file.read(reinterpret_cast<char*>(&part_vel_y), sizeof(float));//NOLINT
-        file.read(reinterpret_cast<char*>(&part_vel_z), sizeof(float));//NOLINT
-        particle.pos.set_x(static_cast<double>(part_coord_x));
-        particle.pos.set_y(static_cast<double>(part_coord_y));
-        particle.pos.set_z(static_cast<double>(part_coord_z));
-        particle.hv.set_x(static_cast<double>(hvx));
-        particle.hv.set_y(static_cast<double>(hvy));
-        particle.hv.set_z(static_cast<double>(hvz));
-        particle.v.set_x(static_cast<double>(part_vel_x));
-        particle.v.set_y(static_cast<double>(part_vel_y));
-        particle.v.set_z(static_cast<double>(part_vel_z));
-        particles.push_back(particle);
+        grid.add_particle(read_particle(file));
     }
-    return counter;}
-std::vector<Particle> initial_read(const std::string& file_address,Initial_Values &initialValues){
+    std::cout<<"Total particles read from file = "<<counter<<'\n';
+    return grid;
+}
+
+
+Grid initial_read(const std::string& file_address,Initial_Values &initialValues){
     //Read file
     std::ifstream file(file_address, std::ios::binary);
+    int counter = 0;
     if (!file.is_open()) { //Check error opening
         std::cerr<<"Error: Cannot open " << file_address <<" for reading";
         exit (-3);
     }
-    std::vector<Particle> particles; //Iniatilize a vector of particles to be stored
     initialValues = read_general_info(file);//call to a function to read parameters
     std::cout<<"Lee bien ppm np";
-    int const counter = read_particle_info(file,particles);
+    Grid grid = initialize_grid(file,initialValues,counter);
     if(counter == 0){
         std::cout<< "Error : Invalid number of particles: " << counter <<".";
     }
@@ -118,7 +175,7 @@ std::vector<Particle> initial_read(const std::string& file_address,Initial_Value
         std::cout<<"Error : Number of particles mismatch. Header " << initialValues.getNp() << " Found " << counter <<".";
     }
     file.close();
-    return particles;
+    return grid;
 }
 
 
