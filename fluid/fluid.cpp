@@ -15,10 +15,20 @@ int main(int argc, char** argv) {
     simulate(1,grid,initialValues);
     write_to_file(arguments[2],grid,initialValues);
 
+    const double boxx = bmax_coord_x - bmin_coord_x;
+    const double boxy = bmax_coord_y - bmin_coord_y;
+    const double boxz = bmax_coord_z - bmin_coord_z;
+    GridSize gridSize;
+    gridSize.setNumX(floor(boxx/initialValues.getH()));
+    gridSize.setNumY(floor(boxy/initialValues.getH()));
+    gridSize.setNumZ(floor(boxz/initialValues.getH()));
+    gridSize.setSizeX(boxx/gridSize.getNumX());
+    gridSize.setSizeY(boxy/gridSize.getNumY());
+    gridSize.setSizeZ(boxz/gridSize.getNumZ());
+    Grid grid_trz(gridSize) ;
 
-
-    load_trace("./trz/small/acctransf-base-1.trz",grid,initialValues);
-    //particle_collision(grid);
-    //check_trace("./trz/small/partcol-base-1.trz",grid,);
+    load_trace("./trz/small/acctransf-base-1.trz",grid_trz,initialValues);
+    particle_collision(grid_trz);
+    check_trace("./trz/small/partcol-base-1.trz",grid_trz);
     //check_trace("./trz/small/boundint-base-1.trz",grid,myparticles,densities,accelerations);
 }

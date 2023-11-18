@@ -15,30 +15,31 @@ public:
     void set(T x, T y, T z) { coords[0] = x; coords[1] = y; coords[2] = z; }
     T& operator[](int i){return coords[i];}
 
-     Vect3<T> operator+ (Vect3<T>& other) {
-         Vect3<T> result(coords[0]+other[0],coords[1]+other[1],coords[2]+other[2]);
-         return result;
-     }
+    Vect3<T> operator+ (Vect3<T>& other) {
+        Vect3<T> result(coords[0]+other[0],coords[1]+other[1],coords[2]+other[2]);
+        return result;
+    }
 
     Vect3<T> operator- (Vect3<T>& other) {///Arreglar estooOo
         Vect3<T>  result(coords[0] - other[0], coords[1] - other[1], coords[2] - other[2]);
         return result;
     }
 
-    Vect3<T> operator* (double &c) {
+    Vect3<T> operator* (double c) {
         Vect3<T> result(coords[0]*c,coords[1]*c,coords[2]*c);
         return result;
     }
 
     Vect3<T>& operator= (Vect3<T> & other) { ///Operator =
-        std::copy(coords.begin(),coords.end(),&other[0]);
+        std::copy_n(&other[0],3,coords.begin());
         return *this;
     }
 
-     Vect3<T>& operator+= (Vect3<T>& other) {
-         Vect3<T> result(coords[0]+other[0],coords[1]+other[1],coords[2]*other[2]);
-         return result;
-     }
+    Vect3<T>& operator+= (Vect3<T> & other) {
+        Vect3<T> sum = *this + other;
+        std::copy_n(&sum[0],3,coords.begin());
+        return *this;
+    }
 
 
     bool operator== (Vect3<T> &other){ ///Operator =
@@ -46,7 +47,7 @@ public:
         return result;
     }
     double dist_sqrd(Vect3& other){
-         Vect3<T> diff = *this - other;
+        Vect3<T> diff = *this - other;
         return pow(diff.x(),2) + pow(diff.y(),2) + pow(diff.z(),2);
 
     }

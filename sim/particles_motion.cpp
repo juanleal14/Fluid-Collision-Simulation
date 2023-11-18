@@ -2,7 +2,7 @@
 
 
 
-void load_trace(std::string trz, Grid &grid, Initial_Values &initialValues){
+void load_trace(std::string trz, Grid &grid_trz, Initial_Values &initialValues){
     std::ifstream file(trz, std::ios::binary);
     if (!file.is_open()) { //Check error opening
         std::cout<<"Error: Cannot open trace file: " << trz <<" for reading";
@@ -135,7 +135,7 @@ void check_trace(std::string trz, Grid &grid){
 
     for (auto current_block: grid.blocks) {
         file.read(reinterpret_cast<char*>(&particles_in_block), sizeof(long));//NOLINT
-        std::cout<<"Entering block: "<<" particles in block = "<<particles_in_block<<'\n';
+        std::cout<<"Entering block: "<<counter<<" particles in block = "<<particles_in_block<<'\n';
 
         if(current_block.size()!=particles_in_block){
             std::cout<<"Number of particles for block "<<" mismatch: "<<"grid["<<i<<"].size() = "<<grid[i].size()<<" particles in block = "<<particles_in_block<<'\n';
