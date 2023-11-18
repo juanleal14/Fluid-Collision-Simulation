@@ -4,15 +4,15 @@
 #endif //FLUID_OPTIMIZATION_PROGARGS_H
 #include "particles.cpp"
 
-constexpr double const_r = 1.695;
-constexpr double global_density = 1000;
-constexpr double stiff_pressure = 3.0;
-constexpr double stiff_collision = 30000;   //stiffness collision
-constexpr double damping = 128.0;
-constexpr double viscosity = 0.4;
-constexpr double part_size = 0.0002; //Particle Size
-constexpr double time_step = 0.001;
-constexpr double gravity = 9.8;
+static constexpr double const_r = 1.695;
+static constexpr double global_density = 1000;
+static constexpr double stiff_pressure = 3.0;
+static constexpr double stiff_collision = 30000;   //stiffness collision
+static constexpr double damping = 128.0;
+static constexpr double viscosity = 0.4;
+static constexpr double part_size = 0.0002; //Particle Size
+static constexpr double time_step = 0.001;
+static constexpr double gravity = 9.8;
 //std::string address = "../new.fld";
 
 

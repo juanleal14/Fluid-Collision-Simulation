@@ -63,15 +63,17 @@ public:
     Particle(int id_val, Vect3<double> pos, Vect3<double> hvs, Vect3<double> vel, double d, Vect3<double> a): id(id_val), pos(pos), hv(hvs), v(vel), density(d), acceleration(a){}
     double distance_to(Particle& p2){return pos.dist_sqrd(p2.pos);
 
+    double distance_to(Particle &p2) {
+        return pos.dist_sqrd(p2.pos);
+    }
     /*
-    Vect3 pos(){return position_values;}
-    Vect3 hv(){return hv_values;}
-    Vect3 vel(){return v_values;}
-    int id(){return id_number;}
-    Vect3 acc()
-     {return acceleration;}
-     */
-
+      Vect3 pos(){return position_values;}
+      Vect3 hv(){return hv_values;}
+      Vect3 vel(){return v_values;}
+      int id(){return id_number;}
+      Vect3 acc()
+       {return acceleration;}
+       */
 };
 
 

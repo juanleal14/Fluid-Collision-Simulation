@@ -5,4 +5,5 @@ add_library(sim
         grid.hpp
         block.cpp
         block.hpp
+        libraries.hpp
 )
