@@ -170,17 +170,11 @@ void check_trace(std::string trz, Grid &grid){
             file.read(reinterpret_cast<char*>(&write_value), sizeof(double));//NOLINT
             current_particle.acceleration.set_y(write_value);
             file.read(reinterpret_cast<char*>(&write_value), sizeof(double));//NOLINT
-            current_particle.acceleration.set_z(write_value);
-
-            compare_particle(particles[id],part,id);
-
-            if (densities[id]!=d){
-                std::cout<<"Densities for particle "<<id<<" differ, d = "<<d<<" densities["<<id<<"] = "<<densities[id]<<" ; Difference = "<<d-densities[id]<<'\n';
-                //exit(-1);
+            part.acceleration.set_z(write_value);
+            if((current_particle != part)){
+                std::cout << "\nParticles " << current_particle.id << " and " << part.id << " are not the same." << "I am in block: " << counter<<"\n";
+                exit(-1);
             }
-
-            compare_accelerations(accelerations[id],a,id);
-
         }
     }
 
