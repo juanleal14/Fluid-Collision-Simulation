@@ -117,10 +117,10 @@ std::vector<int> get_contiguous_blocks(int current_block, Grid &grid){
     const int block_x = current_block - (block_z * grid.size.getNumY() * grid.size.getNumX()) - (block_y * grid.size.getNumX());
 
     for (int loop_z = 0; loop_z < 2; loop_z++){
-        if ((block_z + loop_z >= 0) && (block_z + loop_z <= grid.size.getNumZ() - 1)) {
+        if (block_z + loop_z <= grid.size.getNumZ() - 1) {
             for (int loop_y = 0; loop_y < 2; loop_y++) {
-                if ((block_y + loop_y >= 0) && (block_y + loop_y <= grid.size.getNumY() - 1)) {
-                    for (int loop_x = 0; loop_x < 2; loop_x++) {
+                if (block_y + loop_y <= grid.size.getNumY() - 1) {
+                    for (int loop_x = -1; loop_x < 2; loop_x++) {
                         if ((block_x + loop_x >= 0) && (block_x + loop_x <= grid.size.getNumX() - 1)){
                             const int computed_block = (block_x + loop_x) + (block_y + loop_y) * grid.size.getNumX() + (block_z + loop_z) * grid.size.getNumY() * grid.size.getNumX();
                             contiguous_blocks.push_back(computed_block);
@@ -134,29 +134,31 @@ std::vector<int> get_contiguous_blocks(int current_block, Grid &grid){
 }
 
 
-int find_block(Particle particle,GridSize gridSize){
-    int block_x = floor((particle.pos.x() - bmin_coord_x)/gridSize.getSizeX());
-    int block_y = floor((particle.pos.y() - bmin_coord_y)/gridSize.getSizeY());
-    int block_z = floor((particle.pos.z() - bmin_coord_z)/gridSize.getSizeZ());
-    if (block_x < 0){
+int find_block(Particle particle,GridSize gridSize) {
+    int block_x = floor((particle.pos.x() - bmin_coord_x) / gridSize.getSizeX());
+    int block_y = floor((particle.pos.y() - bmin_coord_y) / gridSize.getSizeY());
+    int block_z = floor((particle.pos.z() - bmin_coord_z) / gridSize.getSizeZ());
+    if (block_x < 0) {
         block_x = 0;
-    } else if (block_x >= gridSize.getNumX()-1) {
-        block_x = gridSize.getNumX()-1;
-    }if (block_y < 0){
-        block_y = 0;
-    } else if (block_y >= gridSize.getNumY()-1) {
-        block_y = gridSize.getNumY()-1;
-    }if (block_z < 0){
-        block_z = 0;
-    } else if (block_z >= gridSize.getNumZ()-1) {
-        block_z = gridSize.getNumZ()-1;
+    } else if (block_x >= gridSize.getNumX() - 1) {
+        block_x = gridSize.getNumX() - 1;
     }
-    //cout << "This is the x block " << block_x << ", y block " << block_y << ", z block " << block_z;
-    const int num_block = block_x + block_y*gridSize.getNumX() + block_z*gridSize.getNumY()*gridSize.getNumX();
+    if (block_y < 0) {
+        block_y = 0;
+    } else if (block_y >= gridSize.getNumY() - 1) {
+        block_y = gridSize.getNumY() - 1;
+    }
+    if (block_z < 0) {
+        block_z = 0;
+    } else if (block_z >= gridSize.getNumZ() - 1) {
+        block_z = gridSize.getNumZ() - 1;
+    }
+    // cout << "This is the x block " << block_x << ", y block " << block_y << ", z block " << block_z;
+    const int num_block =
+        block_x + block_y * gridSize.getNumX() + block_z * gridSize.getNumY() * gridSize.getNumX();
     return num_block;
 }
-
-
+/*
 void particle_collision_with_Z_axis(Grid &grid) {
 
     double z_param = 0;
@@ -304,19 +306,19 @@ void X_boundary_interaction(Grid &grid) {
     }
 }
 
-void boundary_collision(Grid &grid){
+void particle_collision(Grid &grid){
     particle_collision_with_Z_axis(grid);
     particle_collision_with_Y_axis(grid);
     particle_collision_with_X_axis(grid);
 }
-void boundary_interaction(Grid &grid){
+void boundary_collision(Grid &grid){
     Z_boundary_interaction(grid);
     Y_boundary_interaction(grid);
     X_boundary_interaction(grid);
 }
+*/
+// NUEVAS FUNCIONES BOUNDARY
 
-
-//
 Vect3<int> belongs_to_boundary_part(Particle particle, GridSize &gridSize) {
     Vect3<int> belongings(0,0,0) ;
     const int block_x = floor((particle.pos.x() - bmin_coord_x)/gridSize.getNumX());
@@ -381,7 +383,7 @@ void new_boundary_collision(Vect3<int> belongings, Particle &particle) {
     }
 }
 void general_boundary_collision(Vect3<int> belongings, Particle &particle){
-    Vect3<int> zero(0,0,0);
+    Vect3<int> const zero(0,0,0);
     if (belongings == zero) {
         return;
     }
