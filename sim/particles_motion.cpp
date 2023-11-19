@@ -166,7 +166,6 @@ void check_trace(std::string trz, Grid &grid){
             Particle part_in_our_grid = find_elem(id,current_block);
             //std::cout<<"Particle "<<part_in_our_grid.id<<" in block["<<"] : ";
 
-
             part.id = id;
 
             file.read(reinterpret_cast<char*>(&write_value), sizeof(double));//NOLINT
@@ -265,18 +264,12 @@ void particles_motion(Grid &grid) {
             double const move_z = particle.hv.z() * time_step +
                             particle.acceleration.z() * pow(time_step, 2);
             //optimization
-            particle.pos.set(particle.pos.x()+move_x,particle.pos.y()+move_y,particle.pos.z()+move_z);
+            particle.pos.set(particle.pos.x() + move_x,particle.pos.y() + move_y,particle.pos.z() + move_z);
             particle.v.set(particle.hv.x() + (particle.acceleration.x() * time_step)*.5,particle.hv.y() + (particle.acceleration.y() * time_step)*.5,particle.hv.z() + (particle.acceleration.z() * time_step)*.5);
             particle.hv.set(particle.hv.x() + particle.acceleration.x() * time_step,particle.hv.y() + particle.acceleration.y() * time_step,particle.hv.z() + particle.acceleration.z() * time_step);
 
         }
     }
-}
-
-
-
-void density_transform(Particle & particle, Initial_Values& initialValues){
-    particle.density = (particle.density + pow(initialValues.getH(),6))* (315*initialValues.getM())/(64*std::numbers::pi* pow(initialValues.getH(),9));
 }
 
 
@@ -384,16 +377,12 @@ void simulate(int nsteps, Grid &grid, Initial_Values initialValues){
 }
 */
 void new_particles_motion(Particle particle){
-    double const move_x = particle.hv.x() * time_step +
-                          particle.acceleration.x() * pow(time_step, 2);
-    double const move_y = particle.hv.y() * time_step +
-                          particle.acceleration.y() * pow(time_step, 2);
-    double const move_z = particle.hv.z() * time_step +
-                          particle.acceleration.z() * pow(time_step, 2);
-    //optimization
-    particle.pos.set(particle.pos.x()+move_x,particle.pos.y()+move_y,particle.pos.z()+move_z);
-    particle.v.set(particle.hv.x() + (particle.acceleration.x() * time_step)*.5,particle.hv.y() + (particle.acceleration.y() * time_step)*.5,particle.hv.z() + (particle.acceleration.z() * time_step)*.5);
-    particle.hv.set(particle.hv.x() + particle.acceleration.x() * time_step,particle.hv.y() + particle.acceleration.y() * time_step,particle.hv.z() + particle.acceleration.z() * time_step);
+    Vect3<double> move = particle.hv*time_step + particle.acceleration*pow(time_step,2);
+    Vect3<double> hvnew = particle.acceleration*time_step;
+    Vect3<double> vnew = hvnew*.5;
+    particle.pos += move;
+    particle.v = particle.hv + vnew;
+    particle.hv += hvnew;
 }
 /*
 void new_simulate(int nsteps, Grid &grid, Initial_Values initialValues){
