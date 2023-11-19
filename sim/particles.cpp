@@ -14,41 +14,53 @@ public:
     void set_z(T z)  { coords[2] = z; }
     void set(T x, T y, T z) { coords[0] = x; coords[1] = y; coords[2] = z; }
     T& operator[](int i){return coords[i];}
+    const T& operator[](int i) const {return coords[i];}
     //const T& operator[](int const i){return coords[i];}
 
-    Vect3<T> operator+ (Vect3<T>& other) {
+    Vect3<T> operator+ (Vect3<T> const & other) {
         Vect3<T> result(coords[0]+other[0],coords[1]+other[1],coords[2]+other[2]);
         return result;
     }
 
-    Vect3<T> operator- (Vect3<T>& other) {///Arreglar estooOo
+    Vect3<T> operator- (Vect3<T> const & other) {///Arreglar estooOo
         Vect3<T>  result(coords[0] - other[0], coords[1] - other[1], coords[2] - other[2]);
         return result;
     }
 
-    Vect3<T> operator* (double c) {
+    Vect3<T> operator* (const double c) {
         Vect3<T> result(coords[0]*c,coords[1]*c,coords[2]*c);
         return result;
     }
 
-    Vect3<T>& operator= (Vect3<T> & other) { ///Operator =
+    Vect3<T> operator/ (const double c) {
+        Vect3<T> result(coords[0]/c,coords[1]/c,coords[2]/c);
+        return result;
+    }
+
+    Vect3<T>& operator= (Vect3<T> const & other) { ///Operator =
         std::copy_n(&other[0],3,coords.begin());
         return *this;
     }
 
-    Vect3<T>& operator+= (Vect3<T> & other) {
+    Vect3<T>& operator+= (Vect3<T> const & other) {
         Vect3<T> sum = *this + other;
         std::copy_n(&sum[0],3,coords.begin());
         return *this;
     }
 
+    Vect3<T>& operator-= (Vect3<T> const & other) {
+        Vect3<T> sum = *this - other;
+        std::copy_n(&sum[0],3,coords.begin());
+        return *this;
+    }
 
-    bool operator== (Vect3<T> &other){ ///Operator =
-        bool  result = (coords[0]==other[0]) && (coords[1]==other[1]) && (coords[2]==other[2]);
+
+    bool operator== (Vect3<T> const & other){ ///Operator =
+        bool  const result = (coords[0]==other[0]) && (coords[1]==other[1]) && (coords[2]==other[2]);
         return result;
     }
-    double dist_sqrd(Vect3& other){
-        Vect3<T> diff = *this - other;
+    double dist_sqrd(Vect3 const & other){
+        Vect3<T> const diff = *this - other;
         return pow(diff.x(),2) + pow(diff.y(),2) + pow(diff.z(),2);
 
     }
@@ -68,13 +80,13 @@ public:
     double density;
     Vect3<double> acceleration;
 
-    bool operator==(Particle &other) { ///Operator =
-        bool cond = (id == other.id) && (pos == other.pos) && (hv == other.hv) && (v == other.v) &&
+    bool operator==(Particle const &other) { ///Operator =
+        bool const cond = (id == other.id) && (pos == other.pos) && (hv == other.hv) && (v == other.v) &&
                     (density == other.density) && (acceleration == other.acceleration);
         return cond;
     }
 
-    Particle& operator= (Particle & other){
+    Particle& operator= (Particle const & other){
         id = other.id;
         pos = other.pos;
         hv = other.hv;
@@ -91,7 +103,7 @@ public:
     Particle(int id_val, Vect3<double> pos, Vect3<double> hvs, Vect3<double> vel, double d, Vect3<double> a) : id(
             id_val), pos(pos), hv(hvs), v(vel), density(d), acceleration(a) {}
 
-    double distance_to(Particle &p2) {
+    double distance_to(Particle const & p2) {
         return pos.dist_sqrd(p2.pos);
     }
     /*

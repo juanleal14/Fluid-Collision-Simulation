@@ -1,0 +1,109 @@
+/*
+void densities_increase(Grid &grid, Initial_Values &initialValues){ /// Cambiar p por part, porque ya hay una varibale gloabl p
+    std::vector<Block> contiguous_blocks;
+    for (int i_current_b = 0; i_current_b < grid.blocks.size();i_current_b++){ ///Go through all blocks
+        contiguous_blocks = get_contiguous_blocks(i_current_b,grid); ///Get contiguous blocks to current block
+        for (auto particle_current : grid[i_current_b]){ ///Go through each particle of the current block
+            for (const auto& current_cont_block : contiguous_blocks){ ///Traverse the contiguous blocks
+                for (auto particle_cont_current : current_cont_block){ /// Go through each particle in the contiguous block
+                    if (!(particle_current==particle_cont_current)) { /// Check particle_i != particle_j
+                        if (particle_current.distance_to(particle_cont_current) < (pow(initialValues.getH(), 2))) {
+                            particle_current.density = (pow(initialValues.getH(), 2) - particle_current.distance_to(particle_cont_current), 3);
+                        }
+                    }
+                }
+            }
+        }
+    }
+}*/
+
+/*
+void densities_increase(std::vector<Particle> &particles, Grid &grid, std::vector<double> &densities){ /// Cambiar p por part, porque ya hay una varibale gloabl p
+    std::vector<int> contiguous_blocks;
+    int particle_i_index;
+    Particle pi;Particle pj;
+    int c_block_index;
+    int particle_j_index;
+    for (int i = 0; i < grid.blocks.size();i++){ ///Go through all blocks
+        contiguous_blocks = get_contiguous_blocks(i,grid.size); ///Get contiguous blocks to current block
+        for (int p = 0; p < grid[i].size(); p++){ ///Go through each particle of the current block
+            particle_i_index = grid[i][p];
+            pi = particles[particle_i_index];
+            for (int b = 0; b < contiguous_blocks.size(); b++){ ///Traverse the contiguous blocks
+                c_block_index = contiguous_blocks[b]; /// Get the index of the contiguous block to traverse
+                for (int j = 0; j < grid[c_block_index].size();j++){ /// Go through each particle in the contiguous block
+                    particle_j_index = grid[c_block_index][j];
+                    pj = particles[particle_j_index];
+                    if (particle_i_index != particle_j_index) { /// Check pi != pj
+                        if (distance_squared(pi, pj) < (pow(h, 2))) {
+                            densities[particle_i_index] += pow(pow(h, 2) - distance_squared(pi, pj), 3);
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+*/
+
+/*
+void particles_motion(Grid &grid){
+    for (auto current_block: grid.blocks) {
+        for (int loop_i = 0; loop_i <= current_block.size(); loop_i++) {
+        double move_x = loop_i.hv.x() * time_step + accelerations[i].ax * pow(time_step, 2);
+        double move_y = particles[i].hvy * time_step + accelerations[i].ay * pow(time_step, 2);
+        double move_z = particles[i].hvz * time_step + accelerations[i].az * pow(time_step, 2);
+
+        int old_block = find_block(particles[i], grid.size);
+
+        particles[i].px += move_x;
+        particles[i].py += move_y;
+        particles[i].pz += move_z;
+        particles[i].vx = particles[i].hvx + (accelerations[i].ax * time_step) / 2;
+        particles[i].vy = particles[i].hvy + (accelerations[i].ay * time_step) / 2;
+        particles[i].vz = particles[i].hvz + (accelerations[i].az * time_step) / 2;
+        particles[i].hvx = particles[i].hvx + accelerations[i].ax * time_step;
+        particles[i].hvy = particles[i].hvy + accelerations[i].ay * time_step;
+        particles[i].hvz = particles[i].hvz + accelerations[i].az * time_step;
+
+        int new_block = find_block(particles[i], grid.size);
+
+        if (old_block != new_block) {
+            grid[new_block].push_back(i);
+
+            auto x = grid[old_block].begin();
+            while (*x != i) { x++; }
+
+            grid[old_block].erase(x);
+
+        }
+    }
+    }
+}*/
+
+
+/*
+void acceleration_transfer(Grid &grid, Initial_Values &initialValues){
+    std::vector<Block> contiguous_blocks;
+    for (int i_current_b = 0; i_current_b < grid.blocks.size();i_current_b++){ ///Go through all blocks
+        contiguous_blocks = get_contiguous_blocks(i_current_b,grid); ///Get contiguous blocks to current block
+        for (auto particle_current : grid[i_current_b]){ ///Go through each particle of the current block
+            for (const auto& current_cont_block : contiguous_blocks){ ///Traverse the contiguous blocks
+                for (auto particle_cont_current : current_cont_block){ /// Go through each particle in the contiguous block
+                    if (!(particle_current==particle_cont_current)) { /// Check particle_i != particle_j
+                        double const dist_squared = particle_current.distance_to(particle_cont_current);
+                        if (dist_squared < (pow(initialValues.getH(), 2))) {
+                            double const distij = sqrt(std::max(dist_squared, pow(10,-12))); /// In these 4 lines calculate distij as stated in project and update accelerations
+                            particle_current.acceleration.set_x(particle_current.acceleration.x() + ((particle_current.pos.x() - particle_cont_current.pos.x()) * (15 / (std::numbers::pi*pow(initialValues.getH(),6))) * (3 * initialValues.getM() * stiff_pressure/2) * pow(initialValues.getH()-distij,2)/distij * (particle_current.density + particle_cont_current.density - 2*global_density) + (particle_cont_current.v.x() - particle_current.v.x()) * (45/(std::numbers::pi*pow(initialValues.getH(),6)) ) * viscosity * initialValues.getM()) / (particle_current.density * particle_cont_current.density));
+                            particle_current.acceleration.set_y(particle_current.acceleration.y() + ((particle_current.pos.y() - particle_cont_current.pos.y()) * (15 / (std::numbers::pi*pow(initialValues.getH(),6))) * (3 * initialValues.getM() * stiff_pressure/2) * pow(initialValues.getH()-distij,2)/distij * (particle_current.density + particle_cont_current.density - 2*global_density) + (particle_cont_current.v.y() - particle_current.v.y()) * (45/(std::numbers::pi*pow(initialValues.getH(),6)) ) * viscosity * initialValues.getM()) / (particle_current.density * particle_cont_current.density));
+                            particle_current.acceleration.set_z(particle_current.acceleration.z() + ((particle_current.pos.z() - particle_cont_current.pos.z()) * (15 / (std::numbers::pi*pow(initialValues.getH(),6))) * (3 * initialValues.getM() * stiff_pressure/2) * pow(initialValues.getH()-distij,2)/distij * (particle_current.density + particle_cont_current.density - 2*global_density) + (particle_cont_current.v.z() - particle_current.v.z()) * (45/(std::numbers::pi*pow(initialValues.getH(),6)) ) * viscosity * initialValues.getM()) / (particle_current.density * particle_cont_current.density));
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+*/
+
