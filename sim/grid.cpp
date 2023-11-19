@@ -314,8 +314,8 @@ void boundary_collision(Grid &grid){
     Y_boundary_interaction(grid);
     X_boundary_interaction(grid);
 }
-
-Vect3<int> belongs_to_boundary(Particle particle, GridSize gridSize) {
+//
+Vect3<int> belongs_to_boundary_part(Particle particle, GridSize &gridSize) {
     Vect3<int> belongings(0,0,0) ;
     const int block_x = floor((particle.pos.x() - bmin_coord_x)/gridSize.getNumX());
     if (block_x == 0) {
@@ -335,16 +335,27 @@ Vect3<int> belongs_to_boundary(Particle particle, GridSize gridSize) {
     return belongings;
 }
 
-void general_particle_collision(Vect3<int> belongings, Particle particle){
-    Vect3<int> zero(0,0,0);
-    if (belongings == zero) {
-        return;
-    }  new_particle_collision(belongings,particle);
+Vect3<int> belongs_to_boundary_block(int block_index, GridSize &gridSize) {
+    Vect3<int> belongings(0,0,0) ;
+    if (block_index % gridSize.getNumX()== 0  ) {
+        belongings[0]=-1;}
+    else if (block_index % gridSize.getNumX() == gridSize.getNumX()-1){
+        belongings[0]=1;}
+    if (block_index % gridSize.getNumY()== 0) {
+        belongings[1]=-1;}
+    else if (block_index % gridSize.getNumY() == gridSize.getNumY()-1){
+        belongings[1]=1;}
+    if (block_index <gridSize.getSizeY()*gridSize.getSizeX()) {
+        belongings[2]=-1;}
+    else if (block_index >(gridSize.getNumX()*gridSize.getNumY()*(gridSize.getNumZ()-1))){
+        belongings[2]=1;
+    }
 
+    return belongings;
 }
 
 
-void new_particle_collision(Vect3<int> belongings, Particle &particle) {
+void new_boundary_collision(Vect3<int> belongings, Particle &particle) {
     double cord_param = 0;
     int wall = 0;
     double increment = 0;
@@ -352,22 +363,59 @@ void new_particle_collision(Vect3<int> belongings, Particle &particle) {
     Vect3<double> bmax(bmax_coord_x, bmax_coord_y, bmax_coord_z);
     for (int loop_i = 0; loop_i < 3; loop_i++) {
         wall = belongings[loop_i];
-        cord_param = particle.pos[loop_i] + particle.hv[loop_i] * time_step;      //param = pos + hv · ∆t
+        cord_param = particle.pos[loop_i] + particle.hv[loop_i] * time_step;
         if (wall == -1) { //WALL_MIN
-            increment = part_size - (cord_param - bmin[loop_i]);                  //part_size − (param − bmin)
-            if (increment > distance_minimum) {                                   //acc + (cs · ∆p − damping · v)
-                particle.acceleration[loop_i] =
-                        particle.acceleration[loop_i] + (stiff_collision * increment - damping * particle.v[loop_i]);
+            increment = part_size - (cord_param - bmin[loop_i]);
+            if (increment > distance_minimum) {
+                particle.acceleration[loop_i] = particle.acceleration[loop_i] + (stiff_collision * increment - damping * particle.v[loop_i]);
             }
         }
         if (wall == 1) { //WALL_MAX
-            increment = part_size - (bmax[loop_i] - cord_param);                 //part_size − (bmax − param)
-            if (increment > distance_minimum) {                                  //acc − (cs · ∆p + damping · v)
-                particle.acceleration[loop_i] =
-                        particle.acceleration[loop_i] - (stiff_collision * increment + damping * particle.v[loop_i]);
+            increment = part_size - (bmax[loop_i] - cord_param);
+            if (increment > distance_minimum){
+                particle.acceleration[loop_i]=particle.acceleration[loop_i] - (stiff_collision * increment + damping * particle.v[loop_i]);
             }
         }
     }
 }
+void general_boundary_collision(Vect3<int> belongings, Particle particle){
+    Vect3<int> zero(0,0,0);
+    if (belongings == zero) {
+        return;
+    }
+    new_boundary_collision(belongings, particle);
+}
 
 
+
+void new_boundary_interaction(Vect3<int> belongings, Particle &particle) {
+    int wall = 0;
+    double distance = 0;
+    double posible_pos=0;
+    Vect3<double> bmin(bmin_coord_x, bmin_coord_y, bmin_coord_z);
+    Vect3<double> bmax(bmax_coord_x, bmax_coord_y, bmax_coord_z);
+    for (int loop_i = 0; loop_i < 3; loop_i++) {
+        wall = belongings[loop_i];
+        if (wall== -1) { //WALL_MIN
+            distance = particle.pos[loop_i] - bmin[loop_i];
+            posible_pos=bmin[loop_i]-distance;
+        }
+        else if (wall == 1) { //WALL_MAX
+            distance = bmax[loop_i] - particle.pos[loop_i];
+            posible_pos=distance+bmax[loop_i];
+        }
+
+        if ( distance < 0) {
+            particle.pos[loop_i]=posible_pos;
+            particle.v[loop_i]=-particle.v[loop_i] ;
+            particle.hv[loop_i]=-particle.hv[loop_i] ;
+        }
+    }
+}
+void general_boundary_interaction(Vect3<int> belongings, Particle particle){
+    Vect3<int> zero(0,0,0);
+    if (belongings == zero) {
+        return;
+    }
+    new_boundary_interaction(belongings, particle);
+}
