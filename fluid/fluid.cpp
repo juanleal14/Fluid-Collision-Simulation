@@ -28,7 +28,7 @@ int main(int argc, char** argv) {
     gridSize.setSizeZ(boxz/gridSize.getNumZ());
     Grid grid_trz(gridSize) ;
 
-    load_trace("./trz/small/acctransf-base-1.trz",grid_trz,initialValues);
+    load_trace("./trz/small/motion-base-1.trz",grid_trz,initialValues);
     Vect3<int> belongings(0,0,0);
     for (int i = 0; i<grid_trz.blocks.size(); i++){
         belongings = belongs_to_boundary_block(i,grid_trz.size);
