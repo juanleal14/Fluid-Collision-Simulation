@@ -31,12 +31,14 @@ int main(int argc, char** argv) {
     load_trace("./trz/small/acctransf-base-1.trz",grid_trz,initialValues);
     Vect3<int> belongings(0,0,0);
     for (int i = 0; i<grid_trz.blocks.size(); i++){
-      belongings = belongs_to_boundary_block(i,grid_trz.size);
-      for (int j = 0; j<grid_trz[i].size(); j++){
-        general_boundary_collision( belongings, grid_trz[i][j]);
+        belongings = belongs_to_boundary_block(i,grid_trz.size);
+        //if ( belongings[1]!= 0)
+          //  std::cout<<"We are in block:"<<i<<"\n";
+        for (int j = 0; j<grid_trz[i].size(); j++){
+          general_boundary_collision( belongings, grid_trz[i][j]);
         }
     }
-    check_trace("./trz/small/denstransf-base-1.trz",grid_trz);
+    check_trace("./trz/small/partcol-base-1.trz",grid_trz);
     //densities_increase(grid,initialValues);
     //check_trace("./trz/small/densinc-base-1.trz",grid);
     //check_trace("./trz/small/boundint-base-1.trz",grid,myparticles,densities,accelerations);

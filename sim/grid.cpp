@@ -304,16 +304,18 @@ void X_boundary_interaction(Grid &grid) {
     }
 }
 
-void particle_collision(Grid &grid){
+void boundary_collision(Grid &grid){
     particle_collision_with_Z_axis(grid);
     particle_collision_with_Y_axis(grid);
     particle_collision_with_X_axis(grid);
 }
-void boundary_collision(Grid &grid){
+void boundary_interaction(Grid &grid){
     Z_boundary_interaction(grid);
     Y_boundary_interaction(grid);
     X_boundary_interaction(grid);
 }
+
+
 //
 Vect3<int> belongs_to_boundary_part(Particle particle, GridSize &gridSize) {
     Vect3<int> belongings(0,0,0) ;
@@ -337,15 +339,15 @@ Vect3<int> belongs_to_boundary_part(Particle particle, GridSize &gridSize) {
 
 Vect3<int> belongs_to_boundary_block(int block_index, GridSize &gridSize) {
     Vect3<int> belongings(0,0,0) ;
-    if (block_index % gridSize.getNumX()== 0  ) {
+    if (block_index % (gridSize.getNumX()*gridSize.getNumY()) <gridSize.getNumX()) {
         belongings[0]=-1;}
-    else if (block_index % gridSize.getNumX() == gridSize.getNumX()-1){
+    else if (block_index % (gridSize.getNumX()*gridSize.getNumY()) >gridSize.getNumX()*(gridSize.getNumY()-1)-1){
         belongings[0]=1;}
-    if (block_index % gridSize.getNumY()== 0) {
+    if (block_index % gridSize.getNumY() == 0) {
         belongings[1]=-1;}
-    else if (block_index % gridSize.getNumY() == gridSize.getNumY()-1){
+    else if (block_index % gridSize.getNumY()==gridSize.getNumY()-1){
         belongings[1]=1;}
-    if (block_index <gridSize.getSizeY()*gridSize.getSizeX()) {
+    if (block_index < gridSize.getNumY()*gridSize.getNumX()) {
         belongings[2]=-1;}
     else if (block_index >(gridSize.getNumX()*gridSize.getNumY()*(gridSize.getNumZ()-1))){
         belongings[2]=1;
@@ -378,7 +380,7 @@ void new_boundary_collision(Vect3<int> belongings, Particle &particle) {
         }
     }
 }
-void general_boundary_collision(Vect3<int> belongings, Particle particle){
+void general_boundary_collision(Vect3<int> belongings, Particle &particle){
     Vect3<int> zero(0,0,0);
     if (belongings == zero) {
         return;
@@ -412,8 +414,8 @@ void new_boundary_interaction(Vect3<int> belongings, Particle &particle) {
         }
     }
 }
-void general_boundary_interaction(Vect3<int> belongings, Particle particle){
-    Vect3<int> zero(0,0,0);
+void general_boundary_interaction(Vect3<int> belongings, Particle &particle){
+    Vect3<int> const zero(0,0,0);
     if (belongings == zero) {
         return;
     }

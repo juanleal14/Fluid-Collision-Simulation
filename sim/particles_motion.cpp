@@ -154,7 +154,8 @@ void check_trace(std::string trz, Grid &grid){
     int counter = 0;
     for (auto current_block: grid.blocks) {
         file.read(reinterpret_cast<char*>(&particles_in_block), sizeof(long));//NOLINT
-        std::cout<<"Entering block: "<<counter<<" particles in block = "<<particles_in_block<<'\n';
+        if (particles_in_block!=0)
+            std::cout<<"Entering block: "<<counter<<" particles in block = "<<particles_in_block<<'\n';
 
         if(current_block.size()!=particles_in_block){
             std::cout<<"Number of particles for block "<<" mismatch: "<<"grid["<<"].size() = "<<" particles in block = "<<particles_in_block<<'\n';
@@ -278,6 +279,12 @@ void density_transform(Particle & particle, Initial_Values& initialValues){
     particle.density = (particle.density + pow(initialValues.getH(),6))* (315*initialValues.getM())/(64*std::numbers::pi* pow(initialValues.getH(),9));
 }
 
+
+
+void density_transform(Particle & particle, Initial_Values& initialValues){
+    particle.density = (particle.density + pow(initialValues.getH(),6))* (315*initialValues.getM())/(64*std::numbers::pi* pow(initialValues.getH(),9));
+}
+
 void increase_d (Particle &p1, Particle &p2, double h){
     double const dist = p1.distance_to(p2); /// ∥pi − ⃗pj∥2
     if (dist < pow(h,2)) {
@@ -360,7 +367,7 @@ void accelerations_computation(Grid &grid, Initial_Values &initialValues){
  //   acceleration_transfer(grid,initialValues);
 
 }
-
+/*
 void simulate(int nsteps, Grid &grid, Initial_Values initialValues){
     for(int i=0;i < nsteps; i++) {
         //std::vector<double> densities;
@@ -375,7 +382,7 @@ void simulate(int nsteps, Grid &grid, Initial_Values initialValues){
         boundary_collision(grid);
     }
 }
-
+*/
 void new_particles_motion(Particle particle){
     double const move_x = particle.hv.x() * time_step +
                           particle.acceleration.x() * pow(time_step, 2);
