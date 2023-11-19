@@ -376,7 +376,7 @@ void simulate(int nsteps, Grid &grid, Initial_Values initialValues){
     }
 }
 */
-void new_particles_motion(Particle particle){
+void new_particles_motion(Particle &particle){
     Vect3<double> move = particle.hv*time_step + particle.acceleration*pow(time_step,2);
     Vect3<double> hvnew = particle.acceleration*time_step;
     Vect3<double> vnew = hvnew*.5;
