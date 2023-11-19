@@ -339,13 +339,13 @@ Vect3<int> belongs_to_boundary_part(Particle particle, GridSize &gridSize) {
 
 Vect3<int> belongs_to_boundary_block(int block_index, GridSize &gridSize) {
     Vect3<int> belongings(0,0,0) ;
-    if (block_index % (gridSize.getNumX()*gridSize.getNumY()) <gridSize.getNumX()) {
+    if (block_index % gridSize.getNumX() == 0) {
         belongings[0]=-1;}
-    else if (block_index % (gridSize.getNumX()*gridSize.getNumY()) >gridSize.getNumX()*(gridSize.getNumY()-1)-1){
+    else if (block_index % gridSize.getNumX()==gridSize.getNumX()-1){
         belongings[0]=1;}
-    if (block_index % gridSize.getNumY() == 0) {
+    if (block_index % (gridSize.getNumX()*gridSize.getNumY()) <gridSize.getNumX()) {
         belongings[1]=-1;}
-    else if (block_index % gridSize.getNumY()==gridSize.getNumY()-1){
+    else if (block_index % (gridSize.getNumX()*gridSize.getNumY()) >gridSize.getNumX()*(gridSize.getNumY()-1)){
         belongings[1]=1;}
     if (block_index < gridSize.getNumY()*gridSize.getNumX()) {
         belongings[2]=-1;}
@@ -396,7 +396,9 @@ void new_boundary_interaction(Vect3<int> belongings, Particle &particle) {
     double posible_pos=0;
     Vect3<double> bmin(bmin_coord_x, bmin_coord_y, bmin_coord_z);
     Vect3<double> bmax(bmax_coord_x, bmax_coord_y, bmax_coord_z);
-    for (int loop_i = 0; loop_i < 3; loop_i++) {
+    for (int loop_i = 0; loop_i < 3; loop_i++){
+        distance = 0;
+        posible_pos=0;
         wall = belongings[loop_i];
         if (wall== -1) { //WALL_MIN
             distance = particle.pos[loop_i] - bmin[loop_i];
