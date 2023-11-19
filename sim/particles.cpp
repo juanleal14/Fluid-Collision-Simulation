@@ -86,7 +86,7 @@ public:
 
 
     Particle() : id(0), pos(0.0, 0.0, 0.0), hv(0.0, 0.0, 0.0), v(0.0, 0.0, 0.0), density(0.0),
-                 acceleration(0.0, 0.0, 0.0) {};
+                 acceleration(0.0, -9.8, 0.0) {};
 
     Particle(int id_val, Vect3<double> pos, Vect3<double> hvs, Vect3<double> vel, double d, Vect3<double> a) : id(
             id_val), pos(pos), hv(hvs), v(vel), density(d), acceleration(a) {}

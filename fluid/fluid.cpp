@@ -13,8 +13,8 @@ int main(int argc, char** argv) {
     //std::cout<<"\nNum particles: "<<grid.size.<<'\n';
     Grid grid = initial_read(arguments[1],initialValues);
     simulate(1,grid,initialValues);
-    write_to_file(arguments[2],grid,initialValues);
-
+    //write_to_file(arguments[2],grid,initialValues);
+/*
     const double boxx = bmax_coord_x - bmin_coord_x;
     const double boxy = bmax_coord_y - bmin_coord_y;
     const double boxz = bmax_coord_z - bmin_coord_z;
@@ -26,9 +26,9 @@ int main(int argc, char** argv) {
     gridSize.setSizeY(boxy/gridSize.getNumY());
     gridSize.setSizeZ(boxz/gridSize.getNumZ());
     Grid grid_trz(gridSize) ;
-
-    load_trace("./trz/small/boundint-base-1.trz",grid_trz,initialValues);
-    particle_collision(grid_trz);
-    check_trace("./trz/small/partcol-base-1.trz",grid_trz);
+*/
+    //load_trace("./trz/small/boundint-base-1.trz",grid_trz,initialValues);
+    //densities_increase(grid,initialValues);
+    //check_trace("./trz/small/densinc-base-1.trz",grid);
     //check_trace("./trz/small/boundint-base-1.trz",grid,myparticles,densities,accelerations);
 }

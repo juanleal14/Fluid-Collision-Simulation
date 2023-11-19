@@ -68,9 +68,10 @@ Initial_Values read_general_info(std::ifstream &file){
     return initialValues;
 }
 
-Particle read_particle(std::ifstream & file){ ///Read only one particle from file
+Particle read_particle(std::ifstream & file, int id){ ///Read only one particle from file
     float value = 0;
     Particle particle;
+    particle.id = id;
     file.read(reinterpret_cast<char*>(&value), sizeof(float));//NOLINT
     particle.pos.set_x(static_cast<double>(value));
     file.read(reinterpret_cast<char*>(&value), sizeof(float));//NOLINT

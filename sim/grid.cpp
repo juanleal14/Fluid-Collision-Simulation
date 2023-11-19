@@ -81,8 +81,8 @@ Grid initialize_grid(std::ifstream &file,Initial_Values &initialValues,int &coun
     Grid grid(gridSize) ;
 
     while(file.peek()!=EOF){
+        grid.add_particle(read_particle(file,counter));
         counter ++;
-        grid.add_particle(read_particle(file));
     }
     std::cout<<"Total particles read from file = "<<counter<<'\n';
     return grid;
@@ -110,20 +110,20 @@ Grid initial_read(const std::string& file_address,Initial_Values &initialValues)
     return grid;
 }
 
-std::vector<Block> get_contiguous_blocks(int current_block, Grid &grid){
-    std::vector<Block> contiguous_blocks;
+std::vector<int> get_contiguous_blocks(int current_block, Grid &grid){
+    std::vector<int> contiguous_blocks;
     const int block_z = current_block / (grid.size.getNumY() * grid.size.getNumX());
     const int block_y = (current_block - block_z * (grid.size.getNumY() * grid.size.getNumX())) / grid.size.getNumX();
     const int block_x = current_block - (block_z * grid.size.getNumY() * grid.size.getNumX()) - (block_y * grid.size.getNumX());
 
-    for (int loop_x = -1; loop_x < 2; loop_x++){
-        if ((block_x + loop_x >= 0) && (block_x + loop_x <= grid.size.getNumX() - 1)) {
-            for (int loop_y = -1; loop_y < 2; loop_y++) {
+    for (int loop_z = 0; loop_z < 2; loop_z++){
+        if ((block_z + loop_z >= 0) && (block_z + loop_z <= grid.size.getNumZ() - 1)) {
+            for (int loop_y = 0; loop_y < 2; loop_y++) {
                 if ((block_y + loop_y >= 0) && (block_y + loop_y <= grid.size.getNumY() - 1)) {
-                    for (int loop_z = -1; loop_z < 2; loop_z++) {
-                        if ((block_z + loop_z >= 0) && (block_z + loop_z <= grid.size.getNumZ() - 1)){
+                    for (int loop_x = 0; loop_x < 2; loop_x++) {
+                        if ((block_x + loop_x >= 0) && (block_x + loop_x <= grid.size.getNumX() - 1)){
                             const int computed_block = (block_x + loop_x) + (block_y + loop_y) * grid.size.getNumX() + (block_z + loop_z) * grid.size.getNumY() * grid.size.getNumX();
-                            contiguous_blocks.push_back(grid.blocks[computed_block]);
+                            contiguous_blocks.push_back(computed_block);
                         }
                     }
                 }

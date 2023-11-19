@@ -104,13 +104,13 @@ void compare_particle(Particle &p1, Particle &p2){
         std::cout << "id = " << id << " " << "Particles vz pos differ, p1.v.z() = " << p1.v.z() << " p2.v.z() = "<< p2.v.z() << '\n';
         if_found =1;
     }if (p1.acceleration.x() != p2.acceleration.x()){
-        std::cout<<"id = "<<id<<" "<<"Particles vx pos differ, p1.v.x() = "<<p1.acceleration.x()<<" p2.v.x() = "<<p2.acceleration.x()<<'\n';
+        std::cout<<"id = "<<id<<" "<<"Particles vx pos differ, p1.a.x() = "<<p1.acceleration.x()<<" p2.a.x() = "<<p2.acceleration.x()<<'\n';
         if_found =1;
     }if (p1.acceleration.y() != p2.acceleration.y()) {
-        std::cout << "id = " << id << " " << "Particles vy pos differ, p1.v.y() = " << p1.acceleration.y() << " p2.v.y() = "<< p2.acceleration.y() << '\n';
+        std::cout << "id = " << id << " " << "Particles vy pos differ, p1.a.y() = " << p1.acceleration.y() << " p2.a.y() = "<< p2.acceleration.y() << '\n';
         if_found =1;
     }if (p1.acceleration.z() != p2.acceleration.z()){
-        std::cout << "id = " << id << " " << "Particles vz pos differ, p1.v.z() = " << p1.acceleration.z() << " p2.v.z() = "<< p2.acceleration.z() << '\n';
+        std::cout << "id = " << id << " " << "Particles vz pos differ, p1.a.z() = " << p1.acceleration.z() << " p2.a.z() = "<< p2.acceleration.z() << '\n';
         if_found =1;
     }if (if_found==1){
         exit(-1);
@@ -305,6 +305,8 @@ void particles_motion(Grid &grid){
     }
     }
 }*/
+
+/*
 void densities_increase(Grid &grid, Initial_Values &initialValues){ /// Cambiar p por part, porque ya hay una varibale gloabl p
     std::vector<Block> contiguous_blocks;
     for (int i_current_b = 0; i_current_b < grid.blocks.size();i_current_b++){ ///Go through all blocks
@@ -321,7 +323,48 @@ void densities_increase(Grid &grid, Initial_Values &initialValues){ /// Cambiar 
             }
         }
     }
+}*/
+
+void density_transform(Particle & particle, Initial_Values& initialValues){
+    particle.density = (particle.density + pow(initialValues.getH(),6))* (315*initialValues.getM())/(64*std::numbers::pi* pow(initialValues.getH(),9));
 }
+
+void increase_d (Particle &p1, Particle &p2, double h){
+    double const dist = p1.distance_to(p2); /// ∥pi − ⃗pj∥2
+    if (dist < pow(h,2)) {
+        double const increment = pow(pow(h, 2) - dist, 3); /// ∆ρij
+        p1.density += increment;  /// ρi = ρi + ∆ρij
+        p2.density  += increment;  /// ρj = ρj + ∆ρij
+    }
+}
+
+void densities_increase(Grid &grid, Initial_Values &initialValues){
+    std::vector<int> contiguous_blocks;
+    double const h_val = initialValues.getH();
+
+    for (int i_current_b = 0; i_current_b < grid.blocks.size();i_current_b++){ ///Go through all blocks
+        contiguous_blocks = get_contiguous_blocks(i_current_b,grid); ///Get contiguous blocks to current block
+
+        /// Traverse particle inside current block
+        for (int particle_current = 0; particle_current < grid[i_current_b].size(); particle_current++){
+            for (int second_particle = particle_current + 1; second_particle < grid[i_current_b].size(); second_particle++){
+              increase_d(grid[i_current_b][particle_current], grid[i_current_b][second_particle], h_val);
+            }
+
+            /// Traverse adjacent blocks
+            for (int get_cont_block = 1;  get_cont_block < contiguous_blocks.size(); get_cont_block++){ ///Traverse the contiguous blocks
+              int const cont_block = contiguous_blocks[get_cont_block];
+              for (int particle_cont = 0; particle_cont < grid[cont_block].size(); particle_cont++){ /// Go through each particle in the contiguous block
+                increase_d(grid[i_current_b][particle_current], grid[cont_block][particle_cont], h_val);
+              }
+            }
+
+            density_transform(grid[i_current_b][particle_current],initialValues); /// We can apply directly density transform
+
+        }
+    }
+}
+
 /*
 void densities_increase(std::vector<Particle> &particles, Grid &grid, std::vector<double> &densities){ /// Cambiar p por part, porque ya hay una varibale gloabl p
     std::vector<int> contiguous_blocks;
@@ -351,14 +394,8 @@ void densities_increase(std::vector<Particle> &particles, Grid &grid, std::vecto
 }
 
 */
-void densities_transform(Grid &grid,Initial_Values &initialValues){
-    for (const auto& current_block: grid.blocks){
-        for (auto particle : current_block){
-            particle.density = (particle.density + pow(initialValues.getH(),6))* (315*initialValues.getM())/(64*std::numbers::pi* pow(initialValues.getH(),9));
-        }
-    }
-}
 
+/*
 void acceleration_transfer(Grid &grid, Initial_Values &initialValues){
     std::vector<Block> contiguous_blocks;
     for (int i_current_b = 0; i_current_b < grid.blocks.size();i_current_b++){ ///Go through all blocks
@@ -379,27 +416,15 @@ void acceleration_transfer(Grid &grid, Initial_Values &initialValues){
             }
         }
     }
-}
+}*/
 
 void accelerations_computation(Grid &grid, Initial_Values &initialValues){
     //initialization of densities and accelerations
-    for (auto current_block: grid.blocks) {
-        for (auto loop_i : current_block) {
-        //for (int loop_i = 0; loop_i < current_block.size(); loop_i++) {
-
-            loop_i.density = 0;
-            loop_i.acceleration.set(0,-gravity,0);
-            loop_i.acceleration.set_x(0);
-            loop_i.acceleration.set_y(-gravity);
-            loop_i.acceleration.set_z(0);
-            //accelerations.push_back(a);
-        }
-    }
-    //check_trace("../trz/small/densinc-base-1.trz",grid,particles,densities,accelerations);
     densities_increase(grid,initialValues);
+    check_trace("./trz/small/denstransf-base-1.trz",grid);
     //check_trace("./trz/small/densinc-base-1.trz",grid,particles,densities,accelerations);
-    densities_transform(grid,initialValues);
-    acceleration_transfer(grid,initialValues);
+    //densities_transform(grid,initialValues);
+ //   acceleration_transfer(grid,initialValues);
 
 }
 
