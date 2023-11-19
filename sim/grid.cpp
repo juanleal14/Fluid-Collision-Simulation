@@ -259,10 +259,9 @@ void Z_boundary_interaction(Grid &grid) {
 void Y_boundary_interaction(Grid &grid) {
 
     double distance_y=0;
-    double test = 0;
     for (int loop_i = 0; loop_i < grid.size.getNumZ(); loop_i++){     //the number of particles in the y axis is num_x * num_z, twice y min and xmax
         for (int loop_j = 0, loop_k=grid.size.getNumX()*(grid.size.getNumY()-1); loop_j < grid.size.getNumX(); loop_j++,loop_k++) {//pared Y_0
-            for (auto loop_l : grid.blocks[ loop_j + loop_i * grid.size.getNumX() * grid.size.getNumY()]) {//  block_index = j + i * grid.size.num_z * grid.size.num_y;
+            for (auto loop_l : grid.blocks[loop_j + loop_i * grid.size.getNumX() * grid.size.getNumY()]) {//  block_index = j + i * grid.size.num_z * grid.size.num_y;
                 distance_y = loop_l.pos.y() - bmin_coord_y;
                 if (distance_y < 0) {
                     loop_l.pos.set_y(bmin_coord_y + distance_y);
@@ -305,7 +304,6 @@ void X_boundary_interaction(Grid &grid) {
     }
 }
 
-
 void particle_collision(Grid &grid){
     particle_collision_with_Z_axis(grid);
     particle_collision_with_Y_axis(grid);
@@ -316,10 +314,6 @@ void boundary_collision(Grid &grid){
     Y_boundary_interaction(grid);
     X_boundary_interaction(grid);
 }
-
-
-
-
 
 Vect3<int> belongs_to_boundary(Particle particle, GridSize gridSize) {
     Vect3<int> belongings(0,0,0) ;
@@ -345,33 +339,35 @@ void general_particle_collision(Vect3<int> belongings, Particle particle){
     Vect3<int> zero(0,0,0);
     if (belongings == zero) {
         return;
-    }else{
-       void new_particle_collision(belongings,particle);
-    }
+    }  new_particle_collision(belongings,particle);
+
 }
 
 
 void new_particle_collision(Vect3<int> belongings, Particle &particle) {
-     double cord_param=0;
-     int wall = 0;
-     double increment = 0;
-     Vect3<double> bmin(bmin_coord_x,bmin_coord_y,bmin_coord_z);
-     Vect3<double> bmax(bmax_coord_x,bmax_coord_y,bmax_coord_z);
-     for(int loop_i =0;loop_i<3;loop_i++) {
-         wall = belongings[loop_i];
-         cord_param = particle.pos[loop_i] + particle.hv[loop_i] * time_step;      //param = pos + hv · ∆t
-         if (wall == -1) { //WALL_MIN
-             increment = part_size - (cord_param - bmin[loop_i]);                  //part_size − (param − bmin)
-             if (increment > distance_minimum) {                                   //acc + (cs · ∆p − damping · v)
-                 particle.acceleration[loop_i]=particle.acceleration[loop_i] + (stiff_collision * increment - damping * particle.v[loop_i]);
-             }
-         }
-         if (wall == 1) { //WALL_MAX
-             increment = part_size - (bmax[loop_i] - cord_param);                 //part_size − (bmax − param)
-             if (increment > distance_minimum) {                                  //acc − (cs · ∆p + damping · v)
-                 particle.acceleration[loop_i]=particle.acceleration[loop_i] - (stiff_collision * increment + damping * particle.v[loop_i]);
-             }
-         }
-     }
+    double cord_param = 0;
+    int wall = 0;
+    double increment = 0;
+    Vect3<double> bmin(bmin_coord_x, bmin_coord_y, bmin_coord_z);
+    Vect3<double> bmax(bmax_coord_x, bmax_coord_y, bmax_coord_z);
+    for (int loop_i = 0; loop_i < 3; loop_i++) {
+        wall = belongings[loop_i];
+        cord_param = particle.pos[loop_i] + particle.hv[loop_i] * time_step;      //param = pos + hv · ∆t
+        if (wall == -1) { //WALL_MIN
+            increment = part_size - (cord_param - bmin[loop_i]);                  //part_size − (param − bmin)
+            if (increment > distance_minimum) {                                   //acc + (cs · ∆p − damping · v)
+                particle.acceleration[loop_i] =
+                        particle.acceleration[loop_i] + (stiff_collision * increment - damping * particle.v[loop_i]);
+            }
+        }
+        if (wall == 1) { //WALL_MAX
+            increment = part_size - (bmax[loop_i] - cord_param);                 //part_size − (bmax − param)
+            if (increment > distance_minimum) {                                  //acc − (cs · ∆p + damping · v)
+                particle.acceleration[loop_i] =
+                        particle.acceleration[loop_i] - (stiff_collision * increment + damping * particle.v[loop_i]);
+            }
+        }
+    }
+}
 
 

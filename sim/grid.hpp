@@ -35,5 +35,7 @@ void Z_boundary_interaction(Grid &grid);
 
 void particle_collision(Grid &grid);
 void boundary_collision(Grid &grid);;
-
-
+//Nuevas funciones
+void new_particle_collision(Vect3<int> belongings, Particle &particle);
+Vect3<int> belongs_to_boundary(Particle particle, GridSize gridSize);
+void general_particle_collision(Vect3<int> belongings, Particle particle);

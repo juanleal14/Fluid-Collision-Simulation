@@ -54,7 +54,7 @@ void load_trace(std::string trz, Grid &grid_trz, Initial_Values &initialValues){
 }
 
 
-void compare_accelerations(Particle &p1, Particle &p2){
+/*void compare_accelerations(Particle &p1, Particle &p2){
     long id = p1.id;
     if (p1.acceleration.x()!=p2.acceleration.x()){
         std::cout<<"id = "<<id<<" "<<"Accelerations x() differ, a1.x() = "<<p1.acceleration.x()<<" a2.x() = "<<p2.acceleration.x()<<'\n';
@@ -68,7 +68,7 @@ void compare_accelerations(Particle &p1, Particle &p2){
         std::cout<<"id = "<<id<<" "<<"Accelerations az differ, a1.az = "<<p1.acceleration.z()<<" a2.az = "<<p2.acceleration.z()<<'\n';
         //exit(-1);
     }
-}
+}*/
 
 void compare_particle(Particle &p1, Particle &p2){
     long id = p1.id;
@@ -206,7 +206,7 @@ void check_trace(std::string trz, Grid &grid){
     file.close();
 }
 
-void write_to_file(const std::string& output_file_address,Grid grid, Initial_Values &initialValues){
+void write_to_file(const std::string& output_file_address,Grid &grid, Initial_Values &initialValues){
     //Write to the file all the new values
     std::ofstream output_file(output_file_address, std::ios::binary);
     if (!output_file.is_open()) { //Check error opening
@@ -255,13 +255,13 @@ void write_to_file(const std::string& output_file_address,Grid grid, Initial_Val
     output_file.close();
 }
 void particles_motion(Grid &grid) {
-    for (auto current_block: grid.blocks) {
+    for (const auto& current_block: grid.blocks) {
         for (auto particle : current_block) {
-            double move_x = particle.hv.x() * time_step +
+            double const move_x = particle.hv.x() * time_step +
                             particle.acceleration.x() * pow(time_step, 2);
-            double move_y = particle.hv.y() * time_step +
+            double const move_y = particle.hv.y() * time_step +
                             particle.acceleration.y() * pow(time_step, 2);
-            double move_z = particle.hv.z() * time_step +
+            double const move_z = particle.hv.z() * time_step +
                             particle.acceleration.z() * pow(time_step, 2);
             //optimization
             particle.pos.set(particle.pos.x()+move_x,particle.pos.y()+move_y,particle.pos.z()+move_z);
@@ -440,5 +440,32 @@ void simulate(int nsteps, Grid &grid, Initial_Values initialValues){
         particles_motion(grid);
         //Stage 5: Boundary collisions
         boundary_collision(grid);
+    }
+}
+
+void new_particles_motion(Particle particle){
+    double const move_x = particle.hv.x() * time_step +
+                          particle.acceleration.x() * pow(time_step, 2);
+    double const move_y = particle.hv.y() * time_step +
+                          particle.acceleration.y() * pow(time_step, 2);
+    double const move_z = particle.hv.z() * time_step +
+                          particle.acceleration.z() * pow(time_step, 2);
+    //optimization
+    particle.pos.set(particle.pos.x()+move_x,particle.pos.y()+move_y,particle.pos.z()+move_z);
+    particle.v.set(particle.hv.x() + (particle.acceleration.x() * time_step)*.5,particle.hv.y() + (particle.acceleration.y() * time_step)*.5,particle.hv.z() + (particle.acceleration.z() * time_step)*.5);
+    particle.hv.set(particle.hv.x() + particle.acceleration.x() * time_step,particle.hv.y() + particle.acceleration.y() * time_step,particle.hv.z() + particle.acceleration.z() * time_step);
+}
+void new_simulate(int nsteps, Grid &grid, Initial_Values initialValues){
+    for (const auto& current_block: grid.blocks) {
+        for (auto particle : current_block) {
+            accelerations_computation(grid,initialValues);
+        }
+    }
+    for (const auto& current_block: grid.blocks) {
+        for (auto particle : current_block) {
+            new_particle_collision(belongs_to_boundary(particle,grid.size),particle);
+            new_particles_motion(particle);
+            new_boundary_collision(particle);
+        }
     }
 }
