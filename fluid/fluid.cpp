@@ -28,14 +28,14 @@ int main(int argc, char** argv) {
     gridSize.setSizeZ(boxz/gridSize.getNumZ());
     Grid grid_trz(gridSize) ;
 
-    load_trace("./trz/small/motion-base-1.trz",grid_trz,initialValues);
-    Vect3<int> belongings(0,0,0);
+    load_trace("./trz/small/partcol-base-1.trz",grid_trz,initialValues);
     for (int i = 0; i<grid_trz.blocks.size(); i++){
         for (int j = 0; j<grid_trz[i].size(); j++){
-          general_boundary_interaction(belongings, grid_trz[i][j]);
+          new_particles_motion(grid_trz[i][j]);
         }
     }
-    check_trace("./trz/small/boundint-base-1.trz",grid_trz);
+
+    check_trace("./trz/small/motion-base-1.trz",grid_trz);
     //densities_increase(grid,initialValues);
     //check_trace("./trz/small/densinc-base-1.trz",grid);
     //check_trace("./trz/small/boundint-base-1.trz",grid,myparticles,densities,accelerations);

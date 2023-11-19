@@ -20,5 +20,5 @@ void simulate(int nsteps, Grid &grid, Initial_Values initialValues);
 
 void density_transform(Particle & particle, Initial_Values& initialValues);
 void increase_d (Particle &p1, Particle &p2, double h);
-void new_particles_motion(Particle particle);
+void new_particles_motion(Particle &particle);
 #endif

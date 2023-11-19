@@ -267,7 +267,6 @@ void particles_motion(Grid &grid) {
             particle.pos.set(particle.pos.x() + move_x,particle.pos.y() + move_y,particle.pos.z() + move_z);
             particle.v.set(particle.hv.x() + (particle.acceleration.x() * time_step)*.5,particle.hv.y() + (particle.acceleration.y() * time_step)*.5,particle.hv.z() + (particle.acceleration.z() * time_step)*.5);
             particle.hv.set(particle.hv.x() + particle.acceleration.x() * time_step,particle.hv.y() + particle.acceleration.y() * time_step,particle.hv.z() + particle.acceleration.z() * time_step);
-
         }
     }
 }
