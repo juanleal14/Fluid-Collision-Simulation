@@ -406,7 +406,7 @@ void new_boundary_interaction(Vect3<int> belongings, Particle &particle) {
         }
         else if (wall == 1) { //WALL_MAX
             distance = bmax[loop_i] - particle.pos[loop_i];
-            posible_pos=distance+bmax[loop_i];
+            posible_pos=bmax[loop_i]+distance;
         }
 
         if ( distance < 0) {
